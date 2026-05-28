@@ -1,0 +1,68 @@
+{
+  "projectId": "17583395198402885524",
+  "title": "StrideSync Fitness App Design",
+  "screens": [
+    {
+      "id": "13d6914fdba248d2ae04530825933b60",
+      "title": "Splash Screen",
+      "type": "DESIGN"
+    },
+    {
+      "id": "abf6f01c72a3432596d071811d6c0f48",
+      "title": "Activity Summary",
+      "type": "DESIGN"
+    },
+    {
+      "id": "910f2a222f4541a1b360eae52d93a86f",
+      "title": "Register",
+      "type": "DESIGN"
+    },
+    {
+      "id": "9ca604b196d1448689994152501938a2",
+      "title": "Profile",
+      "type": "DESIGN"
+    },
+    {
+      "id": "0d4ca027c77241308eee15a7078951cb",
+      "title": "Register (Material Outlined)",
+      "type": "DESIGN"
+    },
+    {
+      "id": "76d39f0144694e35b184ad8535ead840",
+      "title": "Activity Detail",
+      "type": "DESIGN"
+    },
+    {
+      "id": "4f792839db514683bacc86d6fa37dc52",
+      "title": "Home Feed",
+      "type": "DESIGN"
+    },
+    {
+      "id": "f2c8e2a0cbd14f5d8ee7cdc8ac147041",
+      "title": "Record: Idle",
+      "type": "DESIGN"
+    },
+    {
+      "id": "63cb9fda9450477c8435caf8de26469d",
+      "title": "Search / Explore Athletes",
+      "type": "DESIGN"
+    },
+    {
+      "id": "b7a4f4b1ff454a168e42b6a7d7c110db",
+      "title": "Record: Active",
+      "type": "DESIGN"
+    },
+    {
+      "id": "d44e553020944e60848271685fb905ea",
+      "title": "Login",
+      "type": "DESIGN"
+    }
+  ],
+  "designSystem": {
+    "colorMode": "DARK",
+    "headlineFont": "PLUS_JAKARTA_SANS",
+    "bodyFont": "PLUS_JAKARTA_SANS",
+    "roundness": "ROUND_EIGHT",
+    "customColor": "#fc4c02"
+  }
+}
