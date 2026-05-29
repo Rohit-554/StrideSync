@@ -14,21 +14,19 @@ fun Route.authRoutes(authService: AuthService) {
     route("/auth") {
         post("/register") {
             val request = call.receive<RegisterRequest>()
-            val response = runCatching { authService.register(request) }
-                .getOrElse { e ->
-                    call.respond(HttpStatusCode.Conflict, mapOf("error" to (e.message ?: "Registration failed")))
-                    return@post
-                }
+            val response = runCatching { authService.register(request) }.getOrElse {
+                call.respond(HttpStatusCode.Conflict, mapOf("error" to (it.message ?: "Registration failed")))
+                return@post
+            }
             call.respond(HttpStatusCode.Created, response)
         }
 
         post("/login") {
             val request = call.receive<LoginRequest>()
-            val response = runCatching { authService.login(request) }
-                .getOrElse { e ->
-                    call.respond(HttpStatusCode.Unauthorized, mapOf("error" to (e.message ?: "Login failed")))
-                    return@post
-                }
+            val response = runCatching { authService.login(request) }.getOrElse {
+                call.respond(HttpStatusCode.Unauthorized, mapOf("error" to (it.message ?: "Login failed")))
+                return@post
+            }
             call.respond(HttpStatusCode.OK, response)
         }
     }

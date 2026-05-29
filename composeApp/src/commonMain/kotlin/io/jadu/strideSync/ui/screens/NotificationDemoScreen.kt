@@ -1,5 +1,7 @@
 package io.jadu.strideSync.ui.screens
 
+import io.jadu.strideSync.ui.theme.Spacing
+
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -49,8 +51,8 @@ fun NotificationDemoScreen(onBack: () -> Unit) {
             modifier = Modifier
                 .fillMaxSize()
                 .padding(padding)
-                .padding(16.dp),
-            verticalArrangement = Arrangement.spacedBy(16.dp),
+                .padding(Spacing.lg),
+            verticalArrangement = Arrangement.spacedBy(Spacing.lg),
         ) {
             Text(
                 text = "Schedule a local notification in 5 seconds. The notification survives app kill on Android (WorkManager) and uses UNUserNotificationCenter on iOS.",
@@ -61,7 +63,7 @@ fun NotificationDemoScreen(onBack: () -> Unit) {
             Text("Channel", style = MaterialTheme.typography.labelLarge)
 
             // Channel picker — add your own AppNotificationChannel entries to extend this.
-            Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+            Row(horizontalArrangement = Arrangement.spacedBy(Spacing.sm)) {
                 AppNotificationChannel.entries.forEach { channel ->
                     FilterChip(
                         selected = selectedChannel == channel,

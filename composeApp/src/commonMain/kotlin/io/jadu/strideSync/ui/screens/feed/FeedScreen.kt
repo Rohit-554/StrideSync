@@ -34,6 +34,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
@@ -59,7 +60,9 @@ import io.jadu.strideSync.domain.model.User
 import io.jadu.strideSync.ui.components.ActivityCard
 import io.jadu.strideSync.ui.components.StrideBottomNavigation
 import io.jadu.strideSync.ui.theme.CardSurface
+import io.jadu.strideSync.ui.theme.Spacing
 import io.jadu.strideSync.ui.theme.SurfaceAlt
+import io.jadu.strideSync.ui.theme.StrideColors
 import io.jadu.strideSync.ui.theme.TextSecondary
 import io.jadu.strideSync.ui.viewmodel.FeedViewModel
 import io.jadu.strideSync.utils.Formatters
@@ -72,7 +75,8 @@ private val StatusBackgroundOptions = listOf(
     "#8E24AA",
     "#F9A825"
 )
-private val StatusFallbackColor = Color(0xFFFF571B)
+private val StatusFallbackColor = StrideColors.BrandPrimary
+private const val FEED_TAB = "home"
 
 @Composable
 fun FeedScreen(
@@ -132,13 +136,11 @@ private fun FeedScreenContent(
     onComposerBackgroundChange: (String) -> Unit,
     onSubmitStatus: () -> Unit
 ) {
-    val selectedTab = "home"
-
     Scaffold(
         topBar = { FeedTopBar() },
         bottomBar = {
             StrideBottomNavigation(
-                selectedTab = selectedTab,
+                selectedTab = FEED_TAB,
                 onTabSelected = { tab ->
                     when (tab) {
                         "explore" -> onNavigateToExplore()
@@ -165,15 +167,15 @@ private fun FeedScreenContent(
                     modifier = Modifier
                         .fillMaxSize()
                         .padding(innerPadding)
-                        .padding(top = 16.dp),
-                    verticalArrangement = Arrangement.spacedBy(24.dp)
+                        .padding(top = Spacing.lg),
+                    verticalArrangement = Arrangement.spacedBy(Spacing.xxl)
                 ) {
                     StoryStatusRow(
                         currentUser = storyUiState.currentUser,
                         statuses = storyUiState.statuses,
                         onOpenMyStatus = onOpenMyStatus,
                         onOpenStatus = onOpenStatus,
-                        modifier = Modifier.padding(horizontal = 16.dp)
+                        modifier = Modifier.padding(horizontal = Spacing.lg)
                     )
                     Box(
                         modifier = Modifier.fillMaxSize(),
@@ -197,7 +199,7 @@ private fun FeedScreenContent(
                 ) {
                     Column(
                         horizontalAlignment = Alignment.CenterHorizontally,
-                        verticalArrangement = Arrangement.spacedBy(16.dp)
+                        verticalArrangement = Arrangement.spacedBy(Spacing.lg)
                     ) {
                         Text(
                             text = uiState.message,
@@ -221,8 +223,8 @@ private fun FeedScreenContent(
                 ) {
                     LazyColumn(
                         modifier = Modifier.fillMaxSize(),
-                        contentPadding = PaddingValues(vertical = 16.dp),
-                        verticalArrangement = Arrangement.spacedBy(16.dp)
+                        contentPadding = PaddingValues(vertical = Spacing.lg),
+                        verticalArrangement = Arrangement.spacedBy(Spacing.lg)
                     ) {
                         item {
                             StoryStatusRow(
@@ -230,7 +232,7 @@ private fun FeedScreenContent(
                                 statuses = storyUiState.statuses,
                                 onOpenMyStatus = onOpenMyStatus,
                                 onOpenStatus = onOpenStatus,
-                                modifier = Modifier.padding(horizontal = 16.dp)
+                                modifier = Modifier.padding(horizontal = Spacing.lg)
                             )
                         }
 
@@ -242,7 +244,7 @@ private fun FeedScreenContent(
                                 feedItem = feedItem,
                                 onKudosToggle = { onKudosToggle(feedItem.activity.id) },
                                 onCardClick = { onNavigateToActivity(feedItem.activity.id) },
-                                modifier = Modifier.padding(horizontal = 16.dp)
+                                modifier = Modifier.padding(horizontal = Spacing.lg)
                             )
                         }
 
@@ -251,12 +253,12 @@ private fun FeedScreenContent(
                                 Box(
                                     modifier = Modifier
                                         .fillMaxWidth()
-                                        .padding(16.dp),
+                                        .padding(Spacing.lg),
                                     contentAlignment = Alignment.Center
                                 ) {
                                     if (uiState.isLoadingMore) {
                                         CircularProgressIndicator(
-                                            modifier = Modifier.padding(8.dp),
+                                            modifier = Modifier.padding(Spacing.sm),
                                             color = MaterialTheme.colorScheme.primary
                                         )
                                     }
@@ -310,8 +312,8 @@ private fun FeedTopBar() {
         actions = {
             Box(
                 modifier = Modifier
-                    .padding(end = 12.dp)
-                    .size(40.dp),
+                    .padding(end = Spacing.md)
+                    .size(Spacing.d40),
                 contentAlignment = Alignment.Center
             ) {
                 IconButton(onClick = {}) {
@@ -324,10 +326,10 @@ private fun FeedTopBar() {
                 Box(
                     modifier = Modifier
                         .align(Alignment.TopEnd)
-                        .padding(top = 6.dp, end = 6.dp)
-                        .size(8.dp)
+                        .padding(top = Spacing.d6, end = Spacing.d6)
+                        .size(Spacing.sm)
                         .background(MaterialTheme.colorScheme.primaryContainer, CircleShape)
-                        .border(1.5.dp, MaterialTheme.colorScheme.background, CircleShape)
+                        .border(Spacing.d15, MaterialTheme.colorScheme.background, CircleShape)
                 )
             }
         },
@@ -350,7 +352,7 @@ private fun StoryStatusRow(
         modifier = modifier
             .fillMaxWidth()
             .horizontalScroll(rememberScrollState()),
-        horizontalArrangement = Arrangement.spacedBy(16.dp)
+        horizontalArrangement = Arrangement.spacedBy(Spacing.lg)
     ) {
         StoryBubble(
             label = "You",
@@ -385,29 +387,29 @@ private fun StoryBubble(
     Column(
         modifier = Modifier.clickable(onClick = onClick),
         horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.spacedBy(6.dp)
+        verticalArrangement = Arrangement.spacedBy(Spacing.d6)
     ) {
         Box(
             modifier = Modifier
-                .size(56.dp)
+                .size(Spacing.d56)
                 .background(SurfaceAlt, CircleShape)
                 .then(
                     when {
                         isAdd -> Modifier.border(
-                            BorderStroke(2.dp, TextSecondary.copy(alpha = 0.8f)),
+                            BorderStroke(Spacing.xxs, TextSecondary.copy(alpha = 0.8f)),
                             CircleShape
                         )
                         hasStatus -> Modifier.border(
-                            BorderStroke(2.5.dp, MaterialTheme.colorScheme.primaryContainer),
+                            BorderStroke(Spacing.d25, MaterialTheme.colorScheme.primaryContainer),
                             CircleShape
                         )
                         else -> Modifier.border(
-                            BorderStroke(1.5.dp, MaterialTheme.colorScheme.outlineVariant),
+                            BorderStroke(Spacing.d15, MaterialTheme.colorScheme.outlineVariant),
                             CircleShape
                         )
                     }
                 )
-                .padding(if (hasStatus) 2.dp else 0.dp),
+                .padding(if (hasStatus) Spacing.xxs else Spacing.d0),
             contentAlignment = Alignment.Center
         ) {
             when {
@@ -456,7 +458,7 @@ private fun StatusViewerDialog(
     onUpdate: (() -> Unit)?
 ) {
     val background = colorFromHex(status.backgroundHex)
-    val contentColor = if (background.luminance() > 0.45f) Color(0xFF111318) else Color.White
+    val contentColor = if (background.luminance() > 0.45f) StrideColors.Background else StrideColors.White
 
     AlertDialog(
         onDismissRequest = onDismiss,
@@ -467,7 +469,7 @@ private fun StatusViewerDialog(
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                Column(verticalArrangement = Arrangement.spacedBy(2.dp)) {
+                Column(verticalArrangement = Arrangement.spacedBy(Spacing.xxs)) {
                     Text(
                         text = status.displayName,
                         color = contentColor,
@@ -488,7 +490,7 @@ private fun StatusViewerDialog(
             }
         },
         text = {
-            Column(verticalArrangement = Arrangement.spacedBy(16.dp)) {
+            Column(verticalArrangement = Arrangement.spacedBy(Spacing.lg)) {
                 Text(
                     text = status.text,
                     color = contentColor,
@@ -542,7 +544,7 @@ private fun StatusComposerDialog(
     onSubmit: () -> Unit
 ) {
     val previewColor = colorFromHex(backgroundHex)
-    val previewTextColor = if (previewColor.luminance() > 0.45f) Color(0xFF111318) else Color.White
+    val previewTextColor = if (previewColor.luminance() > 0.45f) StrideColors.Background else StrideColors.White
 
     AlertDialog(
         onDismissRequest = onDismiss,
@@ -555,15 +557,15 @@ private fun StatusComposerDialog(
             )
         },
         text = {
-            Column(verticalArrangement = Arrangement.spacedBy(14.dp)) {
+            Column(verticalArrangement = Arrangement.spacedBy(Spacing.d14)) {
                 Box(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .clip(RoundedCornerShape(20.dp))
+                        .clip(RoundedCornerShape(Spacing.xl))
                         .background(previewColor)
-                        .padding(18.dp)
+                        .padding(Spacing.d18)
                 ) {
-                    Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
+                    Column(verticalArrangement = Arrangement.spacedBy(Spacing.d10)) {
                         Text(
                             text = currentUser?.displayName ?: "You",
                             color = previewTextColor.copy(alpha = 0.8f),
@@ -596,17 +598,17 @@ private fun StatusComposerDialog(
 
                 Row(
                     modifier = Modifier.horizontalScroll(rememberScrollState()),
-                    horizontalArrangement = Arrangement.spacedBy(12.dp)
+                    horizontalArrangement = Arrangement.spacedBy(Spacing.md)
                 ) {
                     StatusBackgroundOptions.forEach { option ->
                         val isSelected = option == backgroundHex
                         Box(
                             modifier = Modifier
-                                .size(34.dp)
+                                .size(Spacing.d34)
                                 .clip(CircleShape)
                                 .background(colorFromHex(option))
                                 .border(
-                                    width = if (isSelected) 3.dp else 1.dp,
+                                    width = if (isSelected) Spacing.d3 else Spacing.d1,
                                     color = if (isSelected) MaterialTheme.colorScheme.onBackground else MaterialTheme.colorScheme.outlineVariant,
                                     shape = CircleShape
                                 )
@@ -631,8 +633,8 @@ private fun StatusComposerDialog(
             ) {
                 if (isSubmitting) {
                     CircularProgressIndicator(
-                        modifier = Modifier.size(16.dp),
-                        strokeWidth = 2.dp,
+                        modifier = Modifier.size(Spacing.lg),
+                        strokeWidth = Spacing.xxs,
                         color = MaterialTheme.colorScheme.onPrimary
                     )
                 } else {

@@ -48,10 +48,14 @@ import io.jadu.strideSync.domain.model.Activity
 import io.jadu.strideSync.ui.components.SportTypeIcon
 import io.jadu.strideSync.ui.components.StrideBottomNavigation
 import io.jadu.strideSync.ui.components.StrideToast
+import io.jadu.strideSync.ui.theme.Spacing
+import io.jadu.strideSync.ui.theme.StrideColors
 import io.jadu.strideSync.ui.theme.TextSecondary
 import io.jadu.strideSync.ui.viewmodel.ProfileViewModel
 import io.jadu.strideSync.utils.Formatters
 import org.koin.compose.viewmodel.koinViewModel
+
+private const val PROFILE_TAB = "profile"
 
 @Composable
 fun ProfileScreen(
@@ -86,7 +90,6 @@ private fun ProfileScreenContent(
     onLogout: () -> Unit,
     onViewActivity: (String) -> Unit
 ) {
-    val selectedTab = "profile"
     var errorToast by remember { mutableStateOf("") }
 
     LaunchedEffect(uiState.errorMessage) {
@@ -94,43 +97,43 @@ private fun ProfileScreenContent(
     }
 
     Box(modifier = Modifier.fillMaxSize()) {
-    Scaffold(
-        topBar = { ProfileTopBar() },
-        bottomBar = {
-            StrideBottomNavigation(
-                selectedTab = selectedTab,
-                onTabSelected = { tab ->
-                    when (tab) {
-                        "home" -> onNavigateToFeed()
-                        "explore" -> onNavigateToExplore()
-                        "record" -> onNavigateToRecord()
+        Scaffold(
+            topBar = { ProfileTopBar() },
+            bottomBar = {
+                StrideBottomNavigation(
+                    selectedTab = PROFILE_TAB,
+                    onTabSelected = { tab ->
+                        when (tab) {
+                            "home" -> onNavigateToFeed()
+                            "explore" -> onNavigateToExplore()
+                            "record" -> onNavigateToRecord()
+                        }
                     }
-                }
-            )
-        },
-        containerColor = Color(0xFF111318)
-    ) { innerPadding ->
-        LazyColumn(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(innerPadding),
-            contentPadding = PaddingValues(bottom = 24.dp),
-            verticalArrangement = Arrangement.spacedBy(0.dp)
-        ) {
-            item {
-                AthleteHeroSection(
-                    displayName = uiState.user?.displayName ?: "Athlete",
-                    email = uiState.user?.email.orEmpty(),
-                    activityCount = uiState.activityCount.toString(),
-                    followerCount = uiState.followerCount.toString(),
-                    followingCount = uiState.followingCount.toString()
                 )
-            }
+            },
+            containerColor = StrideColors.Background
+        ) { innerPadding ->
+            LazyColumn(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(innerPadding),
+                contentPadding = PaddingValues(bottom = Spacing.xxl),
+                verticalArrangement = Arrangement.spacedBy(Spacing.d0)
+            ) {
+                item {
+                    AthleteHeroSection(
+                        displayName = uiState.user?.displayName ?: "Athlete",
+                        email = uiState.user?.email.orEmpty(),
+                        activityCount = uiState.activityCount.toString(),
+                        followerCount = uiState.followerCount.toString(),
+                        followingCount = uiState.followingCount.toString()
+                    )
+                }
 
             item {
                 HorizontalDivider(
-                    color = Color(0xFF252830),
-                    modifier = Modifier.padding(vertical = 8.dp)
+                    color = StrideColors.SurfaceAlt,
+                    modifier = Modifier.padding(vertical = Spacing.sm)
                 )
             }
 
@@ -140,8 +143,8 @@ private fun ProfileScreenContent(
 
             item {
                 HorizontalDivider(
-                    color = Color(0xFF252830),
-                    modifier = Modifier.padding(vertical = 8.dp)
+                    color = StrideColors.SurfaceAlt,
+                    modifier = Modifier.padding(vertical = Spacing.sm)
                 )
             }
 
@@ -154,7 +157,7 @@ private fun ProfileScreenContent(
                     Box(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .height(200.dp),
+                            .height(Spacing.d200),
                         contentAlignment = Alignment.Center
                     ) {
                         CircularProgressIndicator(color = MaterialTheme.colorScheme.primary)
@@ -165,7 +168,7 @@ private fun ProfileScreenContent(
                     Box(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .padding(32.dp),
+                            .padding(Spacing.xxxl),
                         contentAlignment = Alignment.Center
                     ) {
                         Text(
@@ -183,20 +186,20 @@ private fun ProfileScreenContent(
                         onClick = { onViewActivity(activity.id) }
                     )
                     HorizontalDivider(
-                        color = Color(0xFF1A1D23),
-                        modifier = Modifier.padding(horizontal = 16.dp)
+                        color = StrideColors.BackgroundElevated,
+                        modifier = Modifier.padding(horizontal = Spacing.lg)
                     )
                 }
             }
+            }
         }
-    }
 
         if (errorToast.isNotEmpty()) {
             StrideToast(
                 message = errorToast,
                 modifier = Modifier
                     .align(Alignment.TopCenter)
-                    .padding(top = 16.dp),
+                    .padding(top = Spacing.lg),
                 onDismiss = { errorToast = "" }
             )
         }
@@ -230,9 +233,9 @@ private fun AthleteHeroSection(
     Column(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(horizontal = 24.dp, vertical = 16.dp),
+            .padding(horizontal = Spacing.xxl, vertical = Spacing.lg),
         horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.spacedBy(12.dp)
+        verticalArrangement = Arrangement.spacedBy(Spacing.md)
     ) {
         AthleteAvatar(initials = displayName.take(2).uppercase())
         AthleteIdentity(
@@ -251,15 +254,15 @@ private fun AthleteHeroSection(
 private fun AthleteAvatar(initials: String) {
     Box(
         modifier = Modifier
-            .size(88.dp)
-            .border(2.dp, Color(0xFFFC4C02), CircleShape)
-            .padding(3.dp)
-            .background(Color(0xFF252830), CircleShape),
+            .size(Spacing.d88)
+            .border(Spacing.xxs, StrideColors.BrandPrimaryStrong, CircleShape)
+            .padding(Spacing.d3)
+            .background(StrideColors.SurfaceAlt, CircleShape),
         contentAlignment = Alignment.Center
     ) {
         Text(
             text = initials,
-            color = Color(0xFFF0F0F0),
+            color = StrideColors.TextPrimary,
             fontSize = 28.sp,
             fontWeight = FontWeight.Bold
         )
@@ -270,18 +273,18 @@ private fun AthleteAvatar(initials: String) {
 private fun AthleteIdentity(name: String, subtitle: String) {
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.spacedBy(4.dp)
+        verticalArrangement = Arrangement.spacedBy(Spacing.xs)
     ) {
         Text(
             text = name,
-            color = Color(0xFFF0F0F0),
+            color = StrideColors.TextPrimary,
             fontSize = 22.sp,
             fontWeight = FontWeight.Bold
         )
         if (subtitle.isNotBlank()) {
             Text(
                 text = subtitle,
-                color = Color(0xFF9BA3B2),
+                color = StrideColors.TextSecondary,
                 fontSize = 13.sp,
                 fontWeight = FontWeight.Normal
             )
@@ -308,13 +311,13 @@ private fun SocialStatCell(value: String, label: String) {
     Column(horizontalAlignment = Alignment.CenterHorizontally) {
         Text(
             text = value,
-            color = Color(0xFFF0F0F0),
+            color = StrideColors.TextPrimary,
             fontSize = 20.sp,
             fontWeight = FontWeight.ExtraBold
         )
         Text(
             text = label,
-            color = Color(0xFF9BA3B2),
+            color = StrideColors.TextSecondary,
             fontSize = 11.sp,
             fontWeight = FontWeight.Normal
         )
@@ -325,9 +328,9 @@ private fun SocialStatCell(value: String, label: String) {
 private fun SocialStatDivider() {
     Box(
         modifier = Modifier
-            .height(32.dp)
-            .width(1.dp)
-            .background(Color(0xFF252830))
+            .height(Spacing.xxxl)
+            .width(Spacing.d1)
+            .background(StrideColors.SurfaceAlt)
     )
 }
 
@@ -336,7 +339,7 @@ private fun LogoutButton(onLogout: () -> Unit) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(horizontal = 24.dp),
+            .padding(horizontal = Spacing.xxl),
         horizontalArrangement = Arrangement.End
     ) {
         TextButton(onClick = onLogout) {
@@ -344,9 +347,9 @@ private fun LogoutButton(onLogout: () -> Unit) {
                 imageVector = Icons.AutoMirrored.Filled.ExitToApp,
                 contentDescription = null,
                 tint = MaterialTheme.colorScheme.error,
-                modifier = Modifier.size(18.dp)
+                modifier = Modifier.size(Spacing.d18)
             )
-            Spacer(modifier = Modifier.width(4.dp))
+            Spacer(modifier = Modifier.width(Spacing.xs))
             Text(
                 text = "Logout",
                 color = MaterialTheme.colorScheme.error,
@@ -362,19 +365,19 @@ private fun RecentActivitiesHeader(count: Int) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(horizontal = 24.dp, vertical = 8.dp),
+            .padding(horizontal = Spacing.xxl, vertical = Spacing.sm),
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically
     ) {
         Text(
             text = "Recent Activities",
-            color = Color(0xFFF0F0F0),
+            color = StrideColors.TextPrimary,
             fontSize = 16.sp,
             fontWeight = FontWeight.Bold
         )
         Text(
             text = "$count total",
-            color = Color(0xFF9BA3B2),
+            color = StrideColors.TextSecondary,
             fontSize = 13.sp
         )
     }
@@ -389,14 +392,14 @@ private fun RecentActivityItem(
         modifier = Modifier
             .fillMaxWidth()
             .clickable(onClick = onClick)
-            .padding(horizontal = 24.dp, vertical = 12.dp),
-        horizontalArrangement = Arrangement.spacedBy(16.dp),
+            .padding(horizontal = Spacing.xxl, vertical = Spacing.md),
+        horizontalArrangement = Arrangement.spacedBy(Spacing.lg),
         verticalAlignment = Alignment.CenterVertically
     ) {
         Box(
             modifier = Modifier
-                .size(44.dp)
-                .background(Color(0xFF252830), CircleShape),
+                .size(Spacing.d44)
+                .background(StrideColors.SurfaceAlt, CircleShape),
             contentAlignment = Alignment.Center
         ) {
             SportTypeIcon(
@@ -404,33 +407,33 @@ private fun RecentActivityItem(
                 tint = MaterialTheme.colorScheme.primary
             )
         }
-        Column(modifier = Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(2.dp)) {
+        Column(modifier = Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(Spacing.xxs)) {
             Text(
                 text = activity.title,
-                color = Color(0xFFF0F0F0),
+                color = StrideColors.TextPrimary,
                 fontSize = 15.sp,
                 fontWeight = FontWeight.SemiBold
             )
             Text(
                 text = activity.startedAt.let { Formatters.timeAgo(it) },
-                color = Color(0xFF9BA3B2),
+                color = StrideColors.TextSecondary,
                 fontSize = 12.sp,
                 fontWeight = FontWeight.Normal
             )
         }
         Column(
             horizontalAlignment = Alignment.End,
-            verticalArrangement = Arrangement.spacedBy(2.dp)
+            verticalArrangement = Arrangement.spacedBy(Spacing.xxs)
         ) {
             Text(
                 text = activity.distanceM.let { Formatters.metersToKmString(it) },
-                color = Color(0xFFF0F0F0),
+                color = StrideColors.TextPrimary,
                 fontSize = 16.sp,
                 fontWeight = FontWeight.ExtraBold
             )
             Text(
                 text = "KM",
-                color = Color(0xFF9BA3B2),
+                color = StrideColors.TextSecondary,
                 fontSize = 10.sp,
                 fontWeight = FontWeight.Bold,
                 letterSpacing = 1.sp

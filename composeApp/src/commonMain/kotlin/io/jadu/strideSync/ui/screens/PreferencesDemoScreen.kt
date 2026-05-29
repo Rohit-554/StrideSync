@@ -1,5 +1,7 @@
 package io.jadu.strideSync.ui.screens
 
+import io.jadu.strideSync.ui.theme.Spacing
+
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -47,8 +49,8 @@ fun PreferencesDemoScreen(onBack: () -> Unit) {
             modifier = Modifier
                 .fillMaxSize()
                 .padding(padding)
-                .padding(16.dp),
-            verticalArrangement = Arrangement.spacedBy(16.dp),
+                .padding(Spacing.lg),
+            verticalArrangement = Arrangement.spacedBy(Spacing.lg),
         ) {
             UsernameField(
                 username = username,
@@ -90,7 +92,7 @@ private fun UsernameField(
     onUsernameChange: (String) -> Unit,
     onSave: () -> Unit,
 ) {
-    Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+    Column(verticalArrangement = Arrangement.spacedBy(Spacing.sm)) {
         OutlinedTextField(
             value = username,
             onValueChange = onUsernameChange,
@@ -120,7 +122,7 @@ private fun OnboardingToggle(isComplete: Boolean, onToggle: (Boolean) -> Unit) {
 
 @Composable
 private fun StoredValuesSection(prefs: AppPreferences) {
-    Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
+    Column(verticalArrangement = Arrangement.spacedBy(Spacing.xs)) {
         Text("Stored Values", style = MaterialTheme.typography.titleSmall)
         Text(
             text = "Username: ${prefs.username.ifEmpty { "(not set)" }}",

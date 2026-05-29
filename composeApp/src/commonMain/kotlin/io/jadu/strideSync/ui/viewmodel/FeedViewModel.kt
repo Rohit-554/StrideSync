@@ -67,9 +67,7 @@ class FeedViewModel(
     }
 
     fun loadFeed() {
-        loadedItems.clear()
-        currentPage = 0
-        hasMorePages = true
+        resetPagination()
         _uiState.value = FeedUiState.Loading
         refresh()
     }
@@ -88,15 +86,8 @@ class FeedViewModel(
 
             feedRepository.loadFeedPage(page = 0, size = PAGE_SIZE)
                 .onSuccess { items ->
-                    loadedItems.clear()
-                    loadedItems.addAll(items)
-                    currentPage = 0
-                    hasMorePages = items.size >= PAGE_SIZE
-                    _uiState.value = if (items.isEmpty()) {
-                        FeedUiState.Empty
-                    } else {
-                        FeedUiState.Success(items = loadedItems.toList(), hasMore = hasMorePages)
-                    }
+                    replaceLoadedItems(items)
+                    _uiState.value = buildFeedState(loadedItems)
                 }
                 .onFailure { error ->
                     _uiState.value = FeedUiState.Error(error.toUiMessage())
@@ -176,8 +167,7 @@ class FeedViewModel(
             _storyUiState.value = current.copy(isSubmitting = true, errorMessage = null)
             socialRepository.createStatus(text, current.composerBackgroundHex)
                 .onSuccess { created ->
-                    val updatedStatuses = (_storyUiState.value.statuses.filterNot { it.userId == created.userId } + created)
-                        .sortedWith(compareByDescending<StatusItem> { it.isOwn }.thenByDescending { it.createdAt })
+                    val updatedStatuses = mergeStatusesWithCreated(created, _storyUiState.value.statuses)
                     _storyUiState.value = _storyUiState.value.copy(
                         statuses = updatedStatuses,
                         selectedStatus = created,
@@ -225,11 +215,7 @@ class FeedViewModel(
                     loadedItems.addAll(newItems)
                     currentPage += 1
                     hasMorePages = items.size >= PAGE_SIZE
-                    _uiState.value = FeedUiState.Success(
-                        items = loadedItems.toList(),
-                        hasMore = hasMorePages,
-                        isLoadingMore = false
-                    )
+                    _uiState.value = buildFeedState(loadedItems, isLoadingMore = false)
                 }
                 .onFailure {
                     _uiState.value = current.copy(isLoadingMore = false)
@@ -246,15 +232,12 @@ class FeedViewModel(
             socialRepository.toggleKudos(activityId, item.hasKudosed)
                 .onSuccess { hasKudosed ->
                     val currentItems = current.items
-                    val updatedItems = currentItems.map { item ->
-                        if (item.activity.id == activityId) {
-                            item.copy(
-                                kudosCount = if (hasKudosed) item.kudosCount + 1 else (item.kudosCount - 1).coerceAtLeast(0),
-                                hasKudosed = hasKudosed
-                            )
-                        } else {
-                            item
-                        }
+                    val updatedItems = currentItems.map { feedItem ->
+                        if (feedItem.activity.id != activityId) return@map feedItem
+                        feedItem.copy(
+                            kudosCount = updatedKudosCount(feedItem.kudosCount, hasKudosed),
+                            hasKudosed = hasKudosed
+                        )
                     }
                     _uiState.value = current.copy(items = updatedItems)
                     feedRepository.refreshFeed()
@@ -262,4 +245,40 @@ class FeedViewModel(
                 .onFailure { /* Silently fail — UI stays in optimistic state */ }
         }
     }
+
+    private fun resetPagination() {
+        loadedItems.clear()
+        currentPage = 0
+        hasMorePages = true
+    }
+
+    private fun replaceLoadedItems(items: List<FeedItem>) {
+        loadedItems.clear()
+        loadedItems.addAll(items)
+        currentPage = 0
+        hasMorePages = items.size >= PAGE_SIZE
+    }
+
+    private fun buildFeedState(
+        items: List<FeedItem>,
+        isLoadingMore: Boolean = false
+    ): FeedUiState = if (items.isEmpty()) {
+        FeedUiState.Empty
+    } else {
+        FeedUiState.Success(
+            items = items.toList(),
+            hasMore = hasMorePages,
+            isLoadingMore = isLoadingMore
+        )
+    }
+
+    private fun mergeStatusesWithCreated(
+        created: StatusItem,
+        statuses: List<StatusItem>
+    ): List<StatusItem> =
+        (statuses.filterNot { it.userId == created.userId } + created)
+            .sortedWith(compareByDescending<StatusItem> { it.isOwn }.thenByDescending { it.createdAt })
+
+    private fun updatedKudosCount(currentCount: Int, hasKudosed: Boolean): Int =
+        if (hasKudosed) currentCount + 1 else (currentCount - 1).coerceAtLeast(0)
 }

@@ -29,8 +29,6 @@ class FeedRepositoryImpl(
         feedDao.clearAll()
         feedDao.insertAll(cachedEntities)
         response.map { it.toDomain() }
-    }.onFailure { error ->
-        println("StrideSync debug: feed refresh failed: ${error::class.simpleName}: ${error.message}")
     }
 
     override suspend fun loadFeedPage(page: Int, size: Int): Result<List<FeedItem>> = runCatching {
@@ -40,8 +38,6 @@ class FeedRepositoryImpl(
         }
         feedDao.insertAll(response.toCachedEntities())
         response.map { it.toDomain() }
-    }.onFailure { error ->
-        println("StrideSync debug: feed page load failed: ${error::class.simpleName}: ${error.message}")
     }
 
     private fun List<FeedItemResponse>.toCachedEntities(): List<CachedFeedEntity> {

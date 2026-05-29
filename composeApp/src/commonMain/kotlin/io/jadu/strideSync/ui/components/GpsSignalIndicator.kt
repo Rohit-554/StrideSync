@@ -1,5 +1,7 @@
 package io.jadu.strideSync.ui.components
 
+import io.jadu.strideSync.ui.theme.Spacing
+
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -18,33 +20,38 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import io.jadu.strideSync.tracking.TrackingEngine
+import io.jadu.strideSync.ui.theme.StrideColors
 
 @Composable
 fun GpsSignalIndicator(
     quality: TrackingEngine.GpsSignalQuality,
     modifier: Modifier = Modifier
 ) {
-    val (label, color) = when (quality) {
-        TrackingEngine.GpsSignalQuality.Strong -> "GPS Strong" to Color(0xFF3ECF8E)
-        TrackingEngine.GpsSignalQuality.Weak -> "GPS Weak" to Color(0xFFFFC107)
-        TrackingEngine.GpsSignalQuality.None -> "GPS None" to Color(0xFF9BA3B2)
-    }
+    val signal = gpsSignalFor(quality)
 
     Row(
         modifier = modifier
-            .background(Color(0xFF1F2530).copy(alpha = 0.9f), RoundedCornerShape(20.dp))
-            .padding(horizontal = 10.dp, vertical = 6.dp),
-        horizontalArrangement = Arrangement.spacedBy(6.dp),
+            .background(StrideColors.Surface.copy(alpha = 0.9f), RoundedCornerShape(Spacing.xl))
+            .padding(horizontal = Spacing.d10, vertical = Spacing.d6),
+        horizontalArrangement = Arrangement.spacedBy(Spacing.d6),
         verticalAlignment = Alignment.CenterVertically
     ) {
-        SignalBars(quality = quality, activeColor = color)
+        SignalBars(quality = quality, activeColor = signal.color)
         Text(
-            text = label,
-            color = color,
+            text = signal.label,
+            color = signal.color,
             fontSize = 12.sp,
             fontWeight = FontWeight.Medium
         )
     }
+}
+
+private data class GpsSignal(val label: String, val color: Color)
+
+private fun gpsSignalFor(quality: TrackingEngine.GpsSignalQuality): GpsSignal = when (quality) {
+    TrackingEngine.GpsSignalQuality.Strong -> GpsSignal("GPS Strong", StrideColors.Success)
+    TrackingEngine.GpsSignalQuality.Weak -> GpsSignal("GPS Weak", StrideColors.Warning)
+    TrackingEngine.GpsSignalQuality.None -> GpsSignal("GPS None", StrideColors.TextSecondary)
 }
 
 @Composable
@@ -53,31 +60,45 @@ private fun SignalBars(
     activeColor: Color,
     modifier: Modifier = Modifier
 ) {
-    val activeBars = when (quality) {
-        TrackingEngine.GpsSignalQuality.None -> 0
-        TrackingEngine.GpsSignalQuality.Weak -> 2
-        TrackingEngine.GpsSignalQuality.Strong -> 3
-    }
+    val activeBars = activeBarCount(quality)
 
     Row(
         modifier = modifier,
-        horizontalArrangement = Arrangement.spacedBy(2.dp),
+        horizontalArrangement = Arrangement.spacedBy(Spacing.xxs),
         verticalAlignment = Alignment.Bottom
     ) {
         repeat(3) { index ->
-            val isActive = index < activeBars
-            val barColor = if (isActive) activeColor else Color(0xFF3A3F4B)
-            val barHeight = when (index) {
-                0 -> 6.dp
-                1 -> 10.dp
-                else -> 14.dp
-            }
-            Box(
-                modifier = Modifier
-                    .width(3.dp)
-                    .height(barHeight)
-                    .background(barColor, RoundedCornerShape(1.dp))
+            SignalBar(
+                index = index,
+                activeBars = activeBars,
+                activeColor = activeColor
             )
         }
     }
+}
+
+private fun activeBarCount(quality: TrackingEngine.GpsSignalQuality): Int = when (quality) {
+    TrackingEngine.GpsSignalQuality.None -> 0
+    TrackingEngine.GpsSignalQuality.Weak -> 2
+    TrackingEngine.GpsSignalQuality.Strong -> 3
+}
+
+@Composable
+private fun SignalBar(index: Int, activeBars: Int, activeColor: Color) {
+    val isActive = index < activeBars
+    val barColor = if (isActive) activeColor else StrideColors.SurfaceAlt.copy(alpha = 0.7f)
+    val barHeight = barHeightFor(index)
+
+    Box(
+        modifier = Modifier
+            .width(Spacing.d3)
+            .height(barHeight)
+            .background(barColor, RoundedCornerShape(Spacing.d1))
+    )
+}
+
+private fun barHeightFor(index: Int) = when (index) {
+    0 -> Spacing.d6
+    1 -> Spacing.d10
+    else -> Spacing.d14
 }

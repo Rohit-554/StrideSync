@@ -1,5 +1,7 @@
 package io.jadu.strideSync.ui.screens.record
 
+import io.jadu.strideSync.ui.theme.Spacing
+
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -51,6 +53,8 @@ import io.jadu.strideSync.domain.model.SportType
 import io.jadu.strideSync.ui.components.StrideChip
 import io.jadu.strideSync.ui.theme.Background
 import io.jadu.strideSync.ui.theme.Success
+import io.jadu.strideSync.ui.theme.TertiaryContainer
+import io.jadu.strideSync.ui.theme.StrideColors
 
 @Composable
 fun RecordIdleScreen(
@@ -88,7 +92,7 @@ private fun RecordTopBar(onNavigateBack: () -> Unit) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(horizontal = 4.dp, vertical = 8.dp),
+            .padding(horizontal = Spacing.xs, vertical = Spacing.sm),
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically
     ) {
@@ -110,7 +114,7 @@ private fun RecordTopBar(onNavigateBack: () -> Unit) {
             Icon(
                 imageVector = Icons.Default.Settings,
                 contentDescription = "Settings",
-                tint = Color(0xFF9BA3B2)
+                tint = StrideColors.TextSecondary
             )
         }
     }
@@ -131,8 +135,8 @@ private fun SportTypeSelector(
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(horizontal = 16.dp, vertical = 8.dp),
-        horizontalArrangement = Arrangement.spacedBy(8.dp)
+            .padding(horizontal = Spacing.lg, vertical = Spacing.sm),
+        horizontalArrangement = Arrangement.spacedBy(Spacing.sm)
     ) {
         sports.forEach { (sport, icon) ->
             StrideChip(
@@ -148,11 +152,11 @@ private fun SportTypeSelector(
 @Composable
 private fun MapPlaceholder(modifier: Modifier = Modifier) {
     Box(
-        modifier = modifier.background(Color(0xFF1A1D24))
+        modifier = modifier.background(StrideColors.BackgroundElevated)
     ) {
         Canvas(modifier = Modifier.fillMaxSize()) {
-            val gridColor = Color(0xFF252A34)
-            val gridSpacing = 60.dp.toPx()
+            val gridColor = StrideColors.SurfaceAlt
+            val gridSpacing = Spacing.d60.toPx()
 
             var x = 0f
             while (x < size.width) {
@@ -165,26 +169,26 @@ private fun MapPlaceholder(modifier: Modifier = Modifier) {
                 y += gridSpacing
             }
 
-            drawLine(color = Color(0xFF2E3340), start = androidx.compose.ui.geometry.Offset(size.width * 0.1f, size.height * 0.3f), end = androidx.compose.ui.geometry.Offset(size.width * 0.9f, size.height * 0.3f), strokeWidth = 8f, pathEffect = PathEffect.cornerPathEffect(12f))
-            drawLine(color = Color(0xFF2E3340), start = androidx.compose.ui.geometry.Offset(size.width * 0.5f, 0f), end = androidx.compose.ui.geometry.Offset(size.width * 0.5f, size.height), strokeWidth = 8f)
-            drawLine(color = Color(0xFF2E3340), start = androidx.compose.ui.geometry.Offset(size.width * 0.2f, size.height * 0.6f), end = androidx.compose.ui.geometry.Offset(size.width * 0.8f, size.height * 0.6f), strokeWidth = 8f)
+            drawLine(color = StrideColors.SurfaceDivider, start = androidx.compose.ui.geometry.Offset(size.width * 0.1f, size.height * 0.3f), end = androidx.compose.ui.geometry.Offset(size.width * 0.9f, size.height * 0.3f), strokeWidth = 8f, pathEffect = PathEffect.cornerPathEffect(12f))
+            drawLine(color = StrideColors.SurfaceDivider, start = androidx.compose.ui.geometry.Offset(size.width * 0.5f, 0f), end = androidx.compose.ui.geometry.Offset(size.width * 0.5f, size.height), strokeWidth = 8f)
+            drawLine(color = StrideColors.SurfaceDivider, start = androidx.compose.ui.geometry.Offset(size.width * 0.2f, size.height * 0.6f), end = androidx.compose.ui.geometry.Offset(size.width * 0.8f, size.height * 0.6f), strokeWidth = 8f)
         }
 
-        GpsStatusBadge(modifier = Modifier.align(Alignment.TopEnd).padding(12.dp))
+        GpsStatusBadge(modifier = Modifier.align(Alignment.TopEnd).padding(Spacing.md))
 
         Box(
             modifier = Modifier
                 .align(Alignment.Center)
-                .size(16.dp)
-                .shadow(8.dp, CircleShape, ambientColor = Color(0xFF2692FF), spotColor = Color(0xFF2692FF))
-                .background(Color(0xFF2692FF), CircleShape)
-                .border(3.dp, Color.White.copy(alpha = 0.9f), CircleShape)
+                .size(Spacing.lg)
+                .shadow(Spacing.sm, CircleShape, ambientColor = TertiaryContainer, spotColor = TertiaryContainer)
+                .background(TertiaryContainer, CircleShape)
+                .border(Spacing.d3, StrideColors.White.copy(alpha = 0.9f), CircleShape)
         )
         Box(
             modifier = Modifier
                 .align(Alignment.Center)
-                .size(48.dp)
-                .border(1.dp, Color(0xFF2692FF).copy(alpha = 0.3f), CircleShape)
+                .size(Spacing.d48)
+                .border(Spacing.d1, TertiaryContainer.copy(alpha = 0.3f), CircleShape)
         )
     }
 }
@@ -193,15 +197,15 @@ private fun MapPlaceholder(modifier: Modifier = Modifier) {
 private fun GpsStatusBadge(modifier: Modifier = Modifier) {
     Box(
         modifier = modifier
-            .background(Color(0xFF1F2530).copy(alpha = 0.9f), RoundedCornerShape(20.dp))
-            .border(1.dp, Success.copy(alpha = 0.4f), RoundedCornerShape(20.dp))
-            .padding(horizontal = 10.dp, vertical = 6.dp)
+            .background(StrideColors.Surface.copy(alpha = 0.9f), RoundedCornerShape(Spacing.xl))
+            .border(Spacing.d1, Success.copy(alpha = 0.4f), RoundedCornerShape(Spacing.xl))
+            .padding(horizontal = Spacing.d10, vertical = Spacing.d6)
     ) {
         Row(
-            horizontalArrangement = Arrangement.spacedBy(6.dp),
+            horizontalArrangement = Arrangement.spacedBy(Spacing.d6),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            Box(modifier = Modifier.size(8.dp).background(Success, CircleShape))
+            Box(modifier = Modifier.size(Spacing.sm).background(Success, CircleShape))
             Text(text = "GPS Ready", color = Success, fontSize = 12.sp, fontWeight = FontWeight.Medium)
         }
     }
@@ -215,9 +219,9 @@ private fun BottomPanel(
     Column(
         modifier = modifier
             .background(Background)
-            .padding(horizontal = 24.dp)
-            .padding(top = 20.dp, bottom = 32.dp),
-        verticalArrangement = Arrangement.spacedBy(24.dp)
+            .padding(horizontal = Spacing.xxl)
+            .padding(top = Spacing.xl, bottom = Spacing.xxxl),
+        verticalArrangement = Arrangement.spacedBy(Spacing.xxl)
     ) {
         StatsRow()
         StartButton(onClick = onStartRecording)
@@ -232,9 +236,9 @@ private fun StatsRow() {
         verticalAlignment = Alignment.CenterVertically
     ) {
         StatItem(label = "DISTANCE", value = "0.00", unit = "km")
-        HorizontalDivider(modifier = Modifier.size(width = 1.dp, height = 40.dp).background(Color(0xFF44302A)), color = Color(0xFF44302A))
+        HorizontalDivider(modifier = Modifier.size(width = Spacing.d1, height = Spacing.d40).background(StrideColors.SurfaceDivider), color = StrideColors.SurfaceDivider)
         StatItem(label = "TIME", value = "00:00", unit = "")
-        HorizontalDivider(modifier = Modifier.size(width = 1.dp, height = 40.dp).background(Color(0xFF44302A)), color = Color(0xFF44302A))
+        HorizontalDivider(modifier = Modifier.size(width = Spacing.d1, height = Spacing.d40).background(StrideColors.SurfaceDivider), color = StrideColors.SurfaceDivider)
         StatItem(label = "PACE", value = "0:00", unit = "/km")
     }
 }
@@ -245,10 +249,10 @@ private fun StatItem(label: String, value: String, unit: String) {
         Row(verticalAlignment = Alignment.Bottom) {
             Text(text = value, color = Color.White, fontSize = 28.sp, fontWeight = FontWeight.Bold, style = MaterialTheme.typography.headlineMedium)
             if (unit.isNotEmpty()) {
-                Text(text = " $unit", color = Color(0xFF9BA3B2), fontSize = 14.sp, modifier = Modifier.padding(bottom = 3.dp))
+                Text(text = " $unit", color = StrideColors.TextSecondary, fontSize = 14.sp, modifier = Modifier.padding(bottom = Spacing.d3))
             }
         }
-        Text(text = label, color = Color(0xFF9BA3B2), fontSize = 10.sp, fontWeight = FontWeight.Bold, letterSpacing = 1.sp)
+        Text(text = label, color = StrideColors.TextSecondary, fontSize = 10.sp, fontWeight = FontWeight.Bold, letterSpacing = 1.sp)
     }
 }
 
@@ -257,16 +261,16 @@ private fun StartButton(onClick: () -> Unit) {
     Column(
         modifier = Modifier.fillMaxWidth(),
         horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.spacedBy(10.dp)
+        verticalArrangement = Arrangement.spacedBy(Spacing.d10)
     ) {
         Button(
             onClick = onClick,
             shape = CircleShape,
-            colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.primaryContainer, contentColor = Color.White),
-            modifier = Modifier.size(80.dp).shadow(elevation = 16.dp, shape = CircleShape, ambientColor = Color(0xFFFF571B), spotColor = Color(0xFFFF571B))
+            colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.primaryContainer, contentColor = StrideColors.White),
+            modifier = Modifier.size(Spacing.d80).shadow(elevation = Spacing.lg, shape = CircleShape, ambientColor = StrideColors.BrandPrimary, spotColor = StrideColors.BrandPrimary)
         ) {
-            Icon(imageVector = Icons.Default.PlayArrow, contentDescription = "Start recording", modifier = Modifier.size(40.dp))
+            Icon(imageVector = Icons.Default.PlayArrow, contentDescription = "Start recording", modifier = Modifier.size(Spacing.d40))
         }
-        Text(text = "Tap to start recording", color = Color(0xFF9BA3B2), fontSize = 13.sp, fontWeight = FontWeight.Normal, style = MaterialTheme.typography.bodySmall)
+        Text(text = "Tap to start recording", color = StrideColors.TextSecondary, fontSize = 13.sp, fontWeight = FontWeight.Normal, style = MaterialTheme.typography.bodySmall)
     }
 }

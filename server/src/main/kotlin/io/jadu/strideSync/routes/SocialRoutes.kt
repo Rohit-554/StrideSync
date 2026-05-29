@@ -7,8 +7,6 @@ import io.jadu.strideSync.repository.SocialRepository
 import io.jadu.strideSync.repository.UserRepository
 import io.ktor.http.HttpStatusCode
 import io.ktor.server.auth.authenticate
-import io.ktor.server.auth.jwt.JWTPrincipal
-import io.ktor.server.auth.principal
 import io.ktor.server.request.receive
 import io.ktor.server.response.respond
 import io.ktor.server.routing.Route
@@ -22,9 +20,8 @@ fun Route.socialRoutes(
     socialRepository: SocialRepository,
     userRepository: UserRepository,
 ) {
-    // GET /users/{id} — public profile
-        get("/users/{id}") {
-        val targetId = call.parameters["id"]?.let { runCatching { UUID.fromString(it) }.getOrNull() }
+    get("/users/{id}") {
+        val targetId = call.pathUuidOrNull("id")
             ?: return@get call.respond(HttpStatusCode.BadRequest, mapOf("error" to "Invalid user id"))
 
         val user = userRepository.findById(targetId)
@@ -41,9 +38,9 @@ fun Route.socialRoutes(
         call.respond(HttpStatusCode.OK, profile)
     }
 
-        authenticate("auth-jwt") {
+    authenticate("auth-jwt") {
         get("/users/search") {
-            val viewerId = call.principal<JWTPrincipal>()!!.subject!!.let(UUID::fromString)
+            val viewerId = call.authenticatedUserIdOrRespond() ?: return@get
             val query = call.request.queryParameters["q"]?.trim().orEmpty()
             if (query.length < 2) {
                 return@get call.respond(HttpStatusCode.OK, emptyList<Any>())
@@ -57,7 +54,7 @@ fun Route.socialRoutes(
         }
 
         get("/users/suggestions") {
-            val viewerId = call.principal<JWTPrincipal>()!!.subject!!.let(UUID::fromString)
+            val viewerId = call.authenticatedUserIdOrRespond() ?: return@get
             val limit = (call.request.queryParameters["limit"]?.toIntOrNull() ?: 8).coerceIn(1, 20)
             val suggestions = userRepository.listSuggestedUsers(limit = limit, excludeUserId = viewerId)
                 .filterNot { it.id == viewerId }
@@ -66,12 +63,12 @@ fun Route.socialRoutes(
         }
 
         get("/statuses") {
-            val viewerId = call.principal<JWTPrincipal>()!!.subject!!.let(UUID::fromString)
+            val viewerId = call.authenticatedUserIdOrRespond() ?: return@get
             call.respond(HttpStatusCode.OK, socialRepository.getActiveStatuses(viewerId))
         }
 
         post("/statuses") {
-            val viewerId = call.principal<JWTPrincipal>()!!.subject!!.let(UUID::fromString)
+            val viewerId = call.authenticatedUserIdOrRespond() ?: return@post
             val request = call.receive<CreateStatusRequest>()
             val text = request.text.trim()
             if (text.isBlank()) {
@@ -88,10 +85,9 @@ fun Route.socialRoutes(
             call.respond(HttpStatusCode.Created, status)
         }
 
-        // POST /users/{id}/follow
         post("/users/{id}/follow") {
-            val followerId = call.principal<JWTPrincipal>()!!.subject!!.let(UUID::fromString)
-            val followeeId = call.parameters["id"]?.let { runCatching { UUID.fromString(it) }.getOrNull() }
+            val followerId = call.authenticatedUserIdOrRespond() ?: return@post
+            val followeeId = call.pathUuidOrNull("id")
                 ?: return@post call.respond(HttpStatusCode.BadRequest, mapOf("error" to "Invalid user id"))
             if (followerId == followeeId) {
                 return@post call.respond(HttpStatusCode.BadRequest, mapOf("error" to "Cannot follow yourself"))
@@ -100,37 +96,33 @@ fun Route.socialRoutes(
             call.respond(HttpStatusCode.Created)
         }
 
-        // DELETE /users/{id}/follow
         delete("/users/{id}/follow") {
-            val followerId = call.principal<JWTPrincipal>()!!.subject!!.let(UUID::fromString)
-            val followeeId = call.parameters["id"]?.let { runCatching { UUID.fromString(it) }.getOrNull() }
+            val followerId = call.authenticatedUserIdOrRespond() ?: return@delete
+            val followeeId = call.pathUuidOrNull("id")
                 ?: return@delete call.respond(HttpStatusCode.BadRequest, mapOf("error" to "Invalid user id"))
             socialRepository.unfollow(followerId, followeeId)
             call.respond(HttpStatusCode.NoContent)
         }
 
-        // POST /activities/{id}/kudos
         post("/activities/{id}/kudos") {
-            val userId = call.principal<JWTPrincipal>()!!.subject!!.let(UUID::fromString)
-            val activityId = call.parameters["id"]?.let { runCatching { UUID.fromString(it) }.getOrNull() }
+            val userId = call.authenticatedUserIdOrRespond() ?: return@post
+            val activityId = call.pathUuidOrNull("id")
                 ?: return@post call.respond(HttpStatusCode.BadRequest, mapOf("error" to "Invalid activity id"))
             socialRepository.addKudos(activityId, userId)
             call.respond(HttpStatusCode.Created)
         }
 
-        // DELETE /activities/{id}/kudos
         delete("/activities/{id}/kudos") {
-            val userId = call.principal<JWTPrincipal>()!!.subject!!.let(UUID::fromString)
-            val activityId = call.parameters["id"]?.let { runCatching { UUID.fromString(it) }.getOrNull() }
+            val userId = call.authenticatedUserIdOrRespond() ?: return@delete
+            val activityId = call.pathUuidOrNull("id")
                 ?: return@delete call.respond(HttpStatusCode.BadRequest, mapOf("error" to "Invalid activity id"))
             socialRepository.removeKudos(activityId, userId)
             call.respond(HttpStatusCode.NoContent)
         }
 
-        // POST /activities/{id}/comments
         post("/activities/{id}/comments") {
-            val userId = call.principal<JWTPrincipal>()!!.subject!!.let(UUID::fromString)
-            val activityId = call.parameters["id"]?.let { runCatching { UUID.fromString(it) }.getOrNull() }
+            val userId = call.authenticatedUserIdOrRespond() ?: return@post
+            val activityId = call.pathUuidOrNull("id")
                 ?: return@post call.respond(HttpStatusCode.BadRequest, mapOf("error" to "Invalid activity id"))
             val request = call.receive<AddCommentRequest>()
             if (request.text.isBlank()) {
@@ -140,9 +132,8 @@ fun Route.socialRoutes(
             call.respond(HttpStatusCode.Created, comment)
         }
 
-        // GET /activities/{id}/comments
         get("/activities/{id}/comments") {
-            val activityId = call.parameters["id"]?.let { runCatching { UUID.fromString(it) }.getOrNull() }
+            val activityId = call.pathUuidOrNull("id")
                 ?: return@get call.respond(HttpStatusCode.BadRequest, mapOf("error" to "Invalid activity id"))
             call.respond(HttpStatusCode.OK, socialRepository.getComments(activityId))
         }

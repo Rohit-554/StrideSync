@@ -49,7 +49,6 @@ fun AppNavigation() {
                     subclass(Screen.RecordActive::class)
                     subclass(Screen.ActivitySummary::class)
                     subclass(Screen.ActivityDetail::class)
-                    // Legacy demo screens
                     subclass(Screen.Home::class)
                     subclass(Screen.Detail::class)
                     subclass(Screen.Permissions::class)
@@ -72,7 +71,6 @@ fun AppNavigation() {
     Crossfade(targetState = backStack.lastOrNull() ?: Screen.Splash) { screen ->
         when (screen) {
 
-            // ── Splash ───────────────────────────────────────────────────────
             is Screen.Splash -> SplashScreen(
                 onGetStarted = {
                     backStack.clear()
@@ -81,7 +79,6 @@ fun AppNavigation() {
                 }
             )
 
-            // ── Auth ─────────────────────────────────────────────────────────
             is Screen.Login -> LoginScreen(
                 viewModel = authViewModel,
                 onLoginSuccess = {
@@ -100,7 +97,6 @@ fun AppNavigation() {
                 onNavigateToLogin = { backStack.removeLastOrNull() }
             )
 
-            // ── Main tabs ────────────────────────────────────────────────────
             is Screen.Feed -> FeedScreen(
                 onNavigateToRecord = { backStack.add(Screen.Record) },
                 onNavigateToExplore = {
@@ -149,7 +145,6 @@ fun AppNavigation() {
                 }
             )
 
-            // ── Record flow ──────────────────────────────────────────────────
             is Screen.Record -> RecordScreen(
                 viewModel = recordViewModel,
                 onNavigateBack = { backStack.removeLastOrNull() },
@@ -198,13 +193,11 @@ fun AppNavigation() {
                 )
             }
 
-            // ── Detail ───────────────────────────────────────────────────────
             is Screen.ActivityDetail -> ActivityDetailScreen(
                 activityId = screen.activityId,
                 onBack = { backStack.removeLastOrNull() }
             )
 
-            // ── Legacy (unused) ───────────────────────────────────────────────
             else -> Unit
         }
     }

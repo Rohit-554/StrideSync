@@ -48,6 +48,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import io.jadu.strideSync.ui.components.StrideFloatingTextField
 import io.jadu.strideSync.ui.components.StrideToast
+import io.jadu.strideSync.ui.theme.Spacing
+import io.jadu.strideSync.ui.theme.StrideColors
 import io.jadu.strideSync.ui.vectors.AppleIcon
 import io.jadu.strideSync.ui.vectors.GoogleIcon
 import io.jadu.strideSync.ui.viewmodel.AuthViewModel
@@ -74,21 +76,20 @@ fun RegisterScreen(
             .fillMaxSize()
             .statusBarsPadding()
             .imePadding()
-            .padding(16.dp),
+            .padding(Spacing.lg),
         contentAlignment = Alignment.Center
     ) {
         Column(
             modifier = Modifier
                 .fillMaxWidth()
-                .widthIn(max = 360.dp)
+                .widthIn(max = Spacing.d360)
                 .verticalScroll(rememberScrollState()),
             horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.spacedBy(32.dp)
+            verticalArrangement = Arrangement.spacedBy(Spacing.xxxl)
         ) {
-            // Header Section
             Column(
                 horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.spacedBy(8.dp)
+                verticalArrangement = Arrangement.spacedBy(Spacing.sm)
             ) {
                 Text(
                     text = "StrideSync",
@@ -99,7 +100,7 @@ fun RegisterScreen(
                 )
                 Text(
                     text = "Create account",
-                    color = Color(0xFFF0F0F0),
+                    color = StrideColors.TextPrimary,
                     fontSize = 40.sp,
                     fontWeight = FontWeight.ExtraBold,
                     lineHeight = 48.sp,
@@ -108,13 +109,11 @@ fun RegisterScreen(
                 )
             }
 
-            // Input fields and Register Form
             RegisterForm(
                 onRegister = { email, name, password -> viewModel.register(email, name, password) },
                 isLoading = uiState is AuthViewModel.UiState.Loading
             )
 
-            // Divider: or
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 verticalAlignment = Alignment.CenterVertically
@@ -125,10 +124,10 @@ fun RegisterScreen(
                 )
                 Text(
                     text = "or",
-                    color = Color(0xFF9BA3B2),
+                    color = StrideColors.TextSecondary,
                     fontSize = 12.sp,
                     fontWeight = FontWeight.SemiBold,
-                    modifier = Modifier.padding(horizontal = 16.dp)
+                    modifier = Modifier.padding(horizontal = Spacing.lg)
                 )
                 HorizontalDivider(
                     modifier = Modifier.weight(1f),
@@ -136,13 +135,12 @@ fun RegisterScreen(
                 )
             }
 
-            // Social Logins
             Column(
                 modifier = Modifier.fillMaxWidth(),
-                verticalArrangement = Arrangement.spacedBy(16.dp)
+                verticalArrangement = Arrangement.spacedBy(Spacing.lg)
             ) {
                 OutlinedButton(
-                    onClick = { /* Handle Google Sign In */ },
+                    onClick = { },
                     shape = CircleShape,
                     colors = ButtonDefaults.outlinedButtonColors(contentColor = Color.White),
                     border = ButtonDefaults.outlinedButtonBorder(enabled = true).copy(
@@ -150,21 +148,21 @@ fun RegisterScreen(
                     ),
                     modifier = Modifier
                         .fillMaxWidth()
-                        .height(56.dp)
+                        .height(Spacing.d56)
                 ) {
                     Row(
-                        horizontalArrangement = Arrangement.spacedBy(12.dp),
+                        horizontalArrangement = Arrangement.spacedBy(Spacing.md),
                         verticalAlignment = Alignment.CenterVertically
                     ) {
                         Icon(
                             imageVector = GoogleIcon,
                             contentDescription = "Google Logo",
                             tint = Color.Unspecified,
-                            modifier = Modifier.size(20.dp)
+                            modifier = Modifier.size(Spacing.xl)
                         )
                         Text(
                             text = "Continue with Google",
-                            color = Color(0xFFF0F0F0),
+                            color = StrideColors.TextPrimary,
                             fontSize = 16.sp,
                             fontWeight = FontWeight.Normal
                         )
@@ -172,7 +170,7 @@ fun RegisterScreen(
                 }
 
                 OutlinedButton(
-                    onClick = { /* Handle Apple Sign In */ },
+                    onClick = { },
                     shape = CircleShape,
                     colors = ButtonDefaults.outlinedButtonColors(contentColor = Color.White),
                     border = ButtonDefaults.outlinedButtonBorder(enabled = true).copy(
@@ -180,21 +178,21 @@ fun RegisterScreen(
                     ),
                     modifier = Modifier
                         .fillMaxWidth()
-                        .height(56.dp)
+                        .height(Spacing.d56)
                 ) {
                     Row(
-                        horizontalArrangement = Arrangement.spacedBy(12.dp),
+                        horizontalArrangement = Arrangement.spacedBy(Spacing.md),
                         verticalAlignment = Alignment.CenterVertically
                     ) {
                         Icon(
                             imageVector = AppleIcon,
                             contentDescription = "Apple Logo",
                             tint = Color.White,
-                            modifier = Modifier.size(22.dp)
+                            modifier = Modifier.size(Spacing.d22)
                         )
                         Text(
                             text = "Continue with Apple",
-                            color = Color(0xFFF0F0F0),
+                            color = StrideColors.TextPrimary,
                             fontSize = 16.sp,
                             fontWeight = FontWeight.Normal
                         )
@@ -202,7 +200,6 @@ fun RegisterScreen(
                 }
             }
 
-            // Footer
             Row(
                 horizontalArrangement = Arrangement.Center,
                 verticalAlignment = Alignment.CenterVertically,
@@ -210,7 +207,7 @@ fun RegisterScreen(
             ) {
                 Text(
                     text = "Already have an account? ",
-                    color = Color(0xFF9BA3B2),
+                    color = StrideColors.TextSecondary,
                     fontSize = 14.sp
                 )
                 Text(
@@ -228,7 +225,7 @@ fun RegisterScreen(
                 message = toastMessage,
                 modifier = Modifier
                     .align(Alignment.TopCenter)
-                    .padding(top = 8.dp),
+                    .padding(top = Spacing.sm),
                 onDismiss = { toastMessage = "" }
             )
         }
@@ -250,7 +247,7 @@ private fun RegisterForm(
 
     Column(
         modifier = Modifier.fillMaxWidth(),
-        verticalArrangement = Arrangement.spacedBy(12.dp)
+        verticalArrangement = Arrangement.spacedBy(Spacing.md)
     ) {
         StrideFloatingTextField(
             value = displayName,
@@ -308,7 +305,7 @@ private fun RegisterForm(
             supportingText = passwordError?.let { { Text(it) } }
         )
 
-        Spacer(modifier = Modifier.height(8.dp))
+        Spacer(modifier = Modifier.height(Spacing.sm))
 
         Button(
             onClick = {
@@ -330,19 +327,19 @@ private fun RegisterForm(
             ),
             modifier = Modifier
                 .fillMaxWidth()
-                .height(56.dp)
+                .height(Spacing.d56)
                 .shadow(
-                    elevation = 8.dp,
+                    elevation = Spacing.sm,
                     shape = CircleShape,
-                    ambientColor = Color(0xFFFF571B),
-                    spotColor = Color(0xFFFF571B)
+                    ambientColor = StrideColors.BrandPrimary,
+                    spotColor = StrideColors.BrandPrimary
                 )
         ) {
             if (isLoading) {
                 CircularProgressIndicator(
                     color = MaterialTheme.colorScheme.onPrimaryContainer,
-                    strokeWidth = 2.dp,
-                    modifier = Modifier.size(24.dp)
+                    strokeWidth = Spacing.xxs,
+                    modifier = Modifier.size(Spacing.xxl)
                 )
             } else {
                 Text(

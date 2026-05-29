@@ -1,5 +1,7 @@
 package io.jadu.strideSync.ui.screens.record
 
+import io.jadu.strideSync.ui.theme.Spacing
+
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -40,6 +42,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import io.jadu.strideSync.ui.components.StrideBottomNavigation
+import io.jadu.strideSync.ui.theme.StrideColors
 
 @Composable
 fun RecordActiveScreen(
@@ -53,7 +56,7 @@ fun RecordActiveScreen(
     onTabSelected: (String) -> Unit = {}
 ) {
     Scaffold(
-        containerColor = Color(0xFF111318),
+        containerColor = StrideColors.Background,
         bottomBar = {
             StrideBottomNavigation(
                 selectedTab = "record",
@@ -65,10 +68,10 @@ fun RecordActiveScreen(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(innerPadding)
-                .padding(horizontal = 16.dp),
-            verticalArrangement = Arrangement.spacedBy(16.dp)
+                .padding(horizontal = Spacing.lg),
+            verticalArrangement = Arrangement.spacedBy(Spacing.lg)
         ) {
-            Spacer(modifier = Modifier.height(8.dp))
+            Spacer(modifier = Modifier.height(Spacing.sm))
 
             // Top status row: GPS indicator + elapsed label
             Row(
@@ -79,7 +82,7 @@ fun RecordActiveScreen(
                 GpsActiveIndicator()
                 Text(
                     text = "RECORDING",
-                    color = Color(0xFF9BA3B2),
+                    color = StrideColors.TextSecondary,
                     fontSize = 12.sp,
                     fontWeight = FontWeight.Bold,
                     letterSpacing = 1.sp
@@ -93,14 +96,14 @@ fun RecordActiveScreen(
             ) {
                 Text(
                     text = distanceMi,
-                    color = Color(0xFFF0F0F0),
+                    color = StrideColors.TextPrimary,
                     fontSize = 72.sp,
                     fontWeight = FontWeight.ExtraBold,
                     letterSpacing = (-2).sp
                 )
                 Text(
                     text = "MILES",
-                    color = Color(0xFF9BA3B2),
+                    color = StrideColors.TextSecondary,
                     fontSize = 12.sp,
                     fontWeight = FontWeight.Bold,
                     letterSpacing = 1.sp
@@ -111,7 +114,7 @@ fun RecordActiveScreen(
             RouteMapPreview(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(220.dp)
+                    .height(Spacing.d220)
             )
 
             // Stats grid (duration, pace, elev, hr)
@@ -128,7 +131,7 @@ fun RecordActiveScreen(
             RecordingControls(
                 onPause = onPause,
                 onStop = onStop,
-                modifier = Modifier.padding(bottom = 16.dp)
+                modifier = Modifier.padding(bottom = Spacing.lg)
             )
         }
     }
@@ -138,17 +141,17 @@ fun RecordActiveScreen(
 private fun GpsActiveIndicator() {
     Row(
         verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.spacedBy(6.dp)
+        horizontalArrangement = Arrangement.spacedBy(Spacing.d6)
     ) {
         Box(
             modifier = Modifier
-                .size(10.dp)
-                .shadow(elevation = 6.dp, shape = CircleShape, ambientColor = Color(0xFFFC4C02), spotColor = Color(0xFFFC4C02))
-                .background(Color(0xFFFC4C02), shape = CircleShape)
+                .size(Spacing.d10)
+                .shadow(elevation = Spacing.d6, shape = CircleShape, ambientColor = StrideColors.BrandPrimaryStrong, spotColor = StrideColors.BrandPrimaryStrong)
+                .background(StrideColors.BrandPrimaryStrong, shape = CircleShape)
         )
         Text(
             text = "GPS ACTIVE",
-            color = Color(0xFFFC4C02),
+            color = StrideColors.BrandPrimaryStrong,
             fontSize = 12.sp,
             fontWeight = FontWeight.Bold,
             letterSpacing = 1.sp
@@ -160,14 +163,14 @@ private fun GpsActiveIndicator() {
 private fun RouteMapPreview(modifier: Modifier = Modifier) {
     Box(
         modifier = modifier
-            .clip(RoundedCornerShape(16.dp))
-            .background(Color(0xFF1A1D24))
-            .border(1.dp, Color(0xFF2C1B16), RoundedCornerShape(16.dp))
+            .clip(RoundedCornerShape(Spacing.lg))
+            .background(StrideColors.BackgroundElevated)
+            .border(Spacing.d1, StrideColors.SurfaceOutline, RoundedCornerShape(Spacing.lg))
     ) {
         // Dark map grid
         Canvas(modifier = Modifier.fillMaxSize()) {
-            val gridColor = Color(0xFF252830)
-            val gridStep = 40.dp.toPx()
+            val gridColor = StrideColors.SurfaceAlt
+            val gridStep = Spacing.d40.toPx()
             var x = 0f
             while (x < size.width) {
                 drawLine(gridColor, Offset(x, 0f), Offset(x, size.height), strokeWidth = 1f)
@@ -200,19 +203,19 @@ private fun RouteMapPreview(modifier: Modifier = Modifier) {
             }
             drawPath(
                 path = routePath,
-                color = Color(0xFFFF571B),
-                style = Stroke(width = 4.dp.toPx(), cap = StrokeCap.Round, join = StrokeJoin.Round)
+                color = StrideColors.BrandPrimary,
+                style = Stroke(width = Spacing.xs.toPx(), cap = StrokeCap.Round, join = StrokeJoin.Round)
             )
 
             // Current position dot
             drawCircle(
-                color = Color(0xFFFC4C02),
-                radius = 8.dp.toPx(),
+                color = StrideColors.BrandPrimaryStrong,
+                radius = Spacing.sm.toPx(),
                 center = Offset(size.width * 0.92f, size.height * 0.25f)
             )
             drawCircle(
-                color = Color(0x55FC4C02),
-                radius = 18.dp.toPx(),
+                color = StrideColors.BrandPrimaryStrong.copy(alpha = 0.33f),
+                radius = Spacing.d18.toPx(),
                 center = Offset(size.width * 0.92f, size.height * 0.25f)
             )
         }
@@ -229,8 +232,8 @@ private fun LiveStatsGrid(
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .background(Color(0xFF1F0F0B), shape = RoundedCornerShape(16.dp))
-            .padding(20.dp),
+            .background(StrideColors.Surface, shape = RoundedCornerShape(Spacing.lg))
+            .padding(Spacing.xl),
         horizontalArrangement = Arrangement.SpaceEvenly
     ) {
         StatItem(value = duration, label = "DURATION")
@@ -248,13 +251,13 @@ private fun StatItem(value: String, label: String) {
     Column(horizontalAlignment = Alignment.CenterHorizontally) {
         Text(
             text = value,
-            color = Color(0xFFF0F0F0),
+            color = StrideColors.TextPrimary,
             fontSize = 20.sp,
             fontWeight = FontWeight.ExtraBold
         )
         Text(
             text = label,
-            color = Color(0xFF9BA3B2),
+            color = StrideColors.TextSecondary,
             fontSize = 10.sp,
             fontWeight = FontWeight.Bold,
             letterSpacing = 0.5.sp
@@ -266,9 +269,9 @@ private fun StatItem(value: String, label: String) {
 private fun StatDivider() {
     Box(
         modifier = Modifier
-            .width(1.dp)
-            .height(36.dp)
-            .background(Color(0xFF2C1B16))
+            .width(Spacing.d1)
+            .height(Spacing.d36)
+            .background(StrideColors.SurfaceOutline)
     )
 }
 
@@ -280,7 +283,7 @@ private fun RecordingControls(
 ) {
     Row(
         modifier = modifier.fillMaxWidth(),
-        horizontalArrangement = Arrangement.spacedBy(16.dp),
+        horizontalArrangement = Arrangement.spacedBy(Spacing.lg),
         verticalAlignment = Alignment.CenterVertically
     ) {
         // Pause button
@@ -288,19 +291,19 @@ private fun RecordingControls(
             onClick = onPause,
             shape = CircleShape,
             colors = ButtonDefaults.buttonColors(
-                containerColor = Color(0xFF252830),
-                contentColor = Color(0xFFF0F0F0)
+                containerColor = StrideColors.SurfaceAlt,
+                contentColor = StrideColors.TextPrimary
             ),
             modifier = Modifier
                 .weight(1f)
-                .height(56.dp)
+                .height(Spacing.d56)
         ) {
             Icon(
                 imageVector = Icons.Default.Pause,
                 contentDescription = "Pause",
-                modifier = Modifier.size(24.dp)
+                modifier = Modifier.size(Spacing.xxl)
             )
-            Spacer(modifier = Modifier.width(8.dp))
+            Spacer(modifier = Modifier.width(Spacing.sm))
             Text(
                 text = "PAUSE",
                 fontSize = 14.sp,
@@ -314,25 +317,25 @@ private fun RecordingControls(
             onClick = onStop,
             shape = CircleShape,
             colors = ButtonDefaults.buttonColors(
-                containerColor = Color(0xFFFF571B),
-                contentColor = Color.White
+                containerColor = StrideColors.BrandPrimary,
+                contentColor = StrideColors.White
             ),
             modifier = Modifier
                 .weight(1f)
-                .height(56.dp)
+                .height(Spacing.d56)
                 .shadow(
-                    elevation = 12.dp,
+                    elevation = Spacing.md,
                     shape = CircleShape,
-                    ambientColor = Color(0xFFFF571B),
-                    spotColor = Color(0xFFFF571B)
+                    ambientColor = StrideColors.BrandPrimary,
+                    spotColor = StrideColors.BrandPrimary
                 )
         ) {
             Icon(
                 imageVector = Icons.Default.Stop,
                 contentDescription = "Stop",
-                modifier = Modifier.size(24.dp)
+                modifier = Modifier.size(Spacing.xxl)
             )
-            Spacer(modifier = Modifier.width(8.dp))
+            Spacer(modifier = Modifier.width(Spacing.sm))
             Text(
                 text = "STOP",
                 fontSize = 14.sp,

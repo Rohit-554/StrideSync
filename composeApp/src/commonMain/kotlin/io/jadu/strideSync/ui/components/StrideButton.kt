@@ -1,11 +1,15 @@
 package io.jadu.strideSync.ui.components
 
+import io.jadu.strideSync.ui.theme.Spacing
+
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.RadioButtonChecked
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CircularProgressIndicator
@@ -22,8 +26,7 @@ import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.RadioButtonChecked
+import io.jadu.strideSync.ui.theme.StrideColors
 
 @Composable
 fun StridePrimaryButton(
@@ -43,26 +46,18 @@ fun StridePrimaryButton(
         ),
         modifier = modifier
             .fillMaxWidth()
-            .height(56.dp)
+            .height(Spacing.d56)
             .shadow(
-                elevation = 8.dp,
+                elevation = Spacing.sm,
                 shape = CircleShape,
-                ambientColor = Color(0xFFFF571B),
-                spotColor = Color(0xFFFF571B)
+                ambientColor = StrideColors.BrandPrimary,
+                spotColor = StrideColors.BrandPrimary
             )
     ) {
         if (isLoading) {
-            CircularProgressIndicator(
-                color = MaterialTheme.colorScheme.onPrimaryContainer,
-                strokeWidth = 2.dp,
-                modifier = Modifier.size(24.dp)
-            )
+            LoadingSpinner()
         } else {
-            Text(
-                text = text,
-                fontSize = 24.sp,
-                fontWeight = FontWeight.Bold
-            )
+            ButtonLabel(text)
         }
     }
 }
@@ -84,13 +79,9 @@ fun StrideSecondaryButton(
         ),
         modifier = modifier
             .fillMaxWidth()
-            .height(56.dp)
+            .height(Spacing.d56)
     ) {
-        Text(
-            text = text,
-            fontSize = 16.sp,
-            fontWeight = FontWeight.Normal
-        )
+        ButtonLabel(text, fontSize = 16.sp, fontWeight = FontWeight.Normal)
     }
 }
 
@@ -107,12 +98,12 @@ fun RecordFab(
             contentColor = Color.White
         ),
         modifier = modifier
-            .size(64.dp)
+            .size(Spacing.d64)
             .shadow(
-                elevation = 12.dp,
+                elevation = Spacing.md,
                 shape = CircleShape,
-                ambientColor = Color(0xFFFF571B),
-                spotColor = Color(0xFFFF571B)
+                ambientColor = StrideColors.BrandPrimary,
+                spotColor = StrideColors.BrandPrimary
             )
     ) {
         Row(
@@ -122,8 +113,30 @@ fun RecordFab(
             Icon(
                 imageVector = Icons.Default.RadioButtonChecked,
                 contentDescription = "Record",
-                modifier = Modifier.size(36.dp)
+                modifier = Modifier.size(Spacing.d36)
             )
         }
     }
+}
+
+@Composable
+private fun LoadingSpinner() {
+    CircularProgressIndicator(
+        color = MaterialTheme.colorScheme.onPrimaryContainer,
+        strokeWidth = Spacing.xxs,
+        modifier = Modifier.size(Spacing.xxl)
+    )
+}
+
+@Composable
+private fun ButtonLabel(
+    text: String,
+    fontSize: androidx.compose.ui.unit.TextUnit = 24.sp,
+    fontWeight: FontWeight = FontWeight.Bold
+) {
+    Text(
+        text = text,
+        fontSize = fontSize,
+        fontWeight = fontWeight
+    )
 }

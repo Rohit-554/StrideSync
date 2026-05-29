@@ -1,7 +1,9 @@
 package io.jadu.strideSync.gps
 
+import android.Manifest
 import android.annotation.SuppressLint
 import android.content.Context
+import android.content.pm.PackageManager
 import android.os.Looper
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationCallback
@@ -23,11 +25,8 @@ actual class GpsProvider(private val context: Context) {
 
     @SuppressLint("MissingPermission")
     actual fun observeLocation(): Flow<GpsPoint> = callbackFlow {
-        val request = LocationRequest.Builder(
-            Priority.PRIORITY_HIGH_ACCURACY,
-            1000L // interval 1s
-        ).apply {
-            setMinUpdateIntervalMillis(500L) // fastest 500ms
+        val request = LocationRequest.Builder(Priority.PRIORITY_HIGH_ACCURACY, 1000L).apply {
+            setMinUpdateIntervalMillis(500L)
             setWaitForAccurateLocation(true)
         }.build()
 
@@ -56,10 +55,8 @@ actual class GpsProvider(private val context: Context) {
     }
 
     actual fun requestPermission(): Boolean {
-        val fine = android.content.pm.PackageManager.PERMISSION_GRANTED ==
-            context.checkSelfPermission(android.Manifest.permission.ACCESS_FINE_LOCATION)
-        val coarse = android.content.pm.PackageManager.PERMISSION_GRANTED ==
-            context.checkSelfPermission(android.Manifest.permission.ACCESS_COARSE_LOCATION)
+        val fine = PackageManager.PERMISSION_GRANTED == context.checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION)
+        val coarse = PackageManager.PERMISSION_GRANTED == context.checkSelfPermission(Manifest.permission.ACCESS_COARSE_LOCATION)
         return fine || coarse
     }
 

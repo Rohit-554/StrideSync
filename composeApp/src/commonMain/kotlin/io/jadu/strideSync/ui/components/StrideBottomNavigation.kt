@@ -1,5 +1,7 @@
 package io.jadu.strideSync.ui.components
 
+import io.jadu.strideSync.ui.theme.Spacing
+
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
@@ -14,6 +16,11 @@ import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Home
+import androidx.compose.material.icons.filled.Person
+import androidx.compose.material.icons.filled.RadioButtonChecked
+import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -26,18 +33,12 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Home
-import androidx.compose.material.icons.filled.Person
-import androidx.compose.material.icons.filled.RadioButtonChecked
-import androidx.compose.material.icons.filled.Search
 import io.jadu.strideSync.ui.theme.Surface
 import io.jadu.strideSync.ui.theme.TextSecondary
 
 @Composable
 fun StrideBottomNavigation(
-    selectedTab: String, // "home", "explore", "record", "profile"
+    selectedTab: String,
     onTabSelected: (String) -> Unit,
     modifier: Modifier = Modifier
 ) {
@@ -46,15 +47,36 @@ fun StrideBottomNavigation(
             .fillMaxWidth()
             .background(Surface)
             .navigationBarsPadding()
-            .height(64.dp)
-            .padding(horizontal = 16.dp, vertical = 8.dp),
+            .height(Spacing.d64)
+            .padding(horizontal = Spacing.lg, vertical = Spacing.sm),
         horizontalArrangement = Arrangement.SpaceAround,
         verticalAlignment = Alignment.CenterVertically
     ) {
-        BottomNavItem(label = "Home", icon = Icons.Default.Home, isSelected = selectedTab == "home", onClick = { onTabSelected("home") })
-        BottomNavItem(label = "Explore", icon = Icons.Default.Search, isSelected = selectedTab == "explore", onClick = { onTabSelected("explore") })
-        BottomNavItem(label = "Record", icon = Icons.Default.RadioButtonChecked, isSelected = selectedTab == "record", onClick = { onTabSelected("record") })
-        BottomNavItem(label = "Profile", icon = Icons.Default.Person, isSelected = selectedTab == "profile", onClick = { onTabSelected("profile") })
+        NavTab.Home.render(selectedTab, onTabSelected)
+        NavTab.Explore.render(selectedTab, onTabSelected)
+        NavTab.Record.render(selectedTab, onTabSelected)
+        NavTab.Profile.render(selectedTab, onTabSelected)
+    }
+}
+
+private enum class NavTab(
+    val label: String,
+    val icon: ImageVector,
+    val tabId: String
+) {
+    Home("Home", Icons.Default.Home, "home"),
+    Explore("Explore", Icons.Default.Search, "explore"),
+    Record("Record", Icons.Default.RadioButtonChecked, "record"),
+    Profile("Profile", Icons.Default.Person, "profile");
+
+    @Composable
+    fun render(selectedTab: String, onTabSelected: (String) -> Unit) {
+        BottomNavItem(
+            label = label,
+            icon = icon,
+            isSelected = selectedTab == tabId,
+            onClick = { onTabSelected(tabId) }
+        )
     }
 }
 
@@ -77,13 +99,27 @@ private fun BottomNavItem(
                 indication = null,
                 interactionSource = remember { MutableInteractionSource() }
             ) { onClick() }
-            .padding(vertical = 4.dp)
+            .padding(vertical = Spacing.xs)
     ) {
-        Icon(imageVector = icon, contentDescription = label, tint = contentColor, modifier = Modifier.size(24.dp))
-        Text(text = label, color = contentColor, fontSize = 12.sp, fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Normal)
+        Icon(
+            imageVector = icon,
+            contentDescription = label,
+            tint = contentColor,
+            modifier = Modifier.size(Spacing.xxl)
+        )
+        Text(
+            text = label,
+            color = contentColor,
+            fontSize = 12.sp,
+            fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Normal
+        )
         if (isSelected) {
-            Spacer(modifier = Modifier.height(2.dp))
-            Box(modifier = Modifier.size(4.dp).background(activeColor, shape = CircleShape))
+            Spacer(modifier = Modifier.height(Spacing.xxs))
+            Box(
+                modifier = Modifier
+                    .size(Spacing.xs)
+                    .background(activeColor, shape = CircleShape)
+            )
         }
     }
 }

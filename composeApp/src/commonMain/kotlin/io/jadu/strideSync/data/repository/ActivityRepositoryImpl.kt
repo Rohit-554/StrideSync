@@ -192,8 +192,5 @@ private fun String.toSportType(): SportType = when (trim().lowercase()) {
     "swim", "swimming" -> SportType.Swim
     "walk", "walking" -> SportType.Walk
     "other" -> SportType.Other
-    else -> {
-        println("StrideSync debug: unknown sport type '$this', defaulting to Other")
-        SportType.Other
-    }
+    else -> SportType.Other
 }

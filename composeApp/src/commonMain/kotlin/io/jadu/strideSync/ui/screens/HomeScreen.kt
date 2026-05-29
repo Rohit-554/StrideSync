@@ -1,5 +1,7 @@
 package io.jadu.strideSync.ui.screens
 
+import io.jadu.strideSync.ui.theme.Spacing
+
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -52,8 +54,8 @@ fun HomeScreen(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(padding)
-                .padding(16.dp),
-            verticalArrangement = Arrangement.spacedBy(16.dp),
+                .padding(Spacing.lg),
+            verticalArrangement = Arrangement.spacedBy(Spacing.lg),
         ) {
             when (val currentState = state) {
                 is HomeUiState.Loading -> {
@@ -96,8 +98,8 @@ fun HomeScreen(
 
                     LazyColumn(
                         modifier = Modifier.fillMaxWidth(),
-                        verticalArrangement = Arrangement.spacedBy(8.dp),
-                        contentPadding = PaddingValues(vertical = 8.dp),
+                        verticalArrangement = Arrangement.spacedBy(Spacing.sm),
+                        contentPadding = PaddingValues(vertical = Spacing.sm),
                     ) {
                         items(currentState.items) { item ->
                             Card(
@@ -108,7 +110,7 @@ fun HomeScreen(
                             ) {
                                 Text(
                                     text = item,
-                                    modifier = Modifier.padding(16.dp),
+                                    modifier = Modifier.padding(Spacing.lg),
                                     style = MaterialTheme.typography.bodyLarge,
                                 )
                             }

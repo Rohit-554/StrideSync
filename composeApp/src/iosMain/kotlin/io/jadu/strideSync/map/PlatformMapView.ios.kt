@@ -10,10 +10,6 @@ import platform.WebKit.WKWebView
 
 private const val STRAVA_ORANGE = "#FC4C02"
 
-/**
- * iOS actual: renders an OpenStreetMap via WKWebView + Leaflet.js.
- * No native MapKit overlay API complexities; Leaflet handles tiles and polyline.
- */
 @OptIn(ExperimentalForeignApi::class)
 @Composable
 actual fun PlatformMapView(

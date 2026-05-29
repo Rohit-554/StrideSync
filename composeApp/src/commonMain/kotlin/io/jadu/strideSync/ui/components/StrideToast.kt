@@ -1,5 +1,7 @@
 package io.jadu.strideSync.ui.components
 
+import io.jadu.strideSync.ui.theme.Spacing
+
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.FastOutSlowInEasing
 import androidx.compose.animation.core.tween
@@ -28,9 +30,11 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import io.jadu.strideSync.ui.theme.StrideColors
 import kotlinx.coroutines.delay
 
 enum class StrideToastType { Success, Error }
@@ -53,9 +57,7 @@ fun StrideToast(
         onDismiss()
     }
 
-    val bgColor = if (type == StrideToastType.Success) Color(0xFF3ECF8E) else Color(0xFFF56565)
-    val contentColor = if (type == StrideToastType.Success) Color(0xFF001C3A) else Color.White
-    val icon = if (type == StrideToastType.Success) Icons.Default.CheckCircle else Icons.Default.Error
+    val style = toastStyleFor(type)
 
     AnimatedVisibility(
         visible = visible,
@@ -65,27 +67,52 @@ fun StrideToast(
         ) { -it },
         exit = fadeOut(tween(250)) + slideOutVertically(tween(300)) { -it }
     ) {
-        Row(
-            modifier = Modifier
-                .padding(horizontal = 24.dp, vertical = 8.dp)
-                .shadow(elevation = 12.dp, shape = CircleShape)
-                .background(bgColor, CircleShape)
-                .padding(horizontal = 20.dp, vertical = 12.dp),
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.spacedBy(8.dp)
-        ) {
-            Icon(
-                imageVector = icon,
-                contentDescription = null,
-                tint = contentColor,
-                modifier = Modifier.size(20.dp)
-            )
-            Text(
-                text = message,
-                color = contentColor,
-                fontSize = 14.sp,
-                fontWeight = FontWeight.Bold
-            )
-        }
+        ToastContent(message = message, style = style)
+    }
+}
+
+private data class ToastStyle(
+    val backgroundColor: Color,
+    val contentColor: Color,
+    val icon: ImageVector
+)
+
+@Composable
+private fun toastStyleFor(type: StrideToastType): ToastStyle = when (type) {
+    StrideToastType.Success -> ToastStyle(
+        backgroundColor = StrideColors.Success,
+        contentColor = StrideColors.InkDark,
+        icon = Icons.Default.CheckCircle
+    )
+    StrideToastType.Error -> ToastStyle(
+        backgroundColor = StrideColors.Error,
+        contentColor = StrideColors.White,
+        icon = Icons.Default.Error
+    )
+}
+
+@Composable
+private fun ToastContent(message: String, style: ToastStyle) {
+    Row(
+        modifier = Modifier
+            .padding(horizontal = Spacing.xxl, vertical = Spacing.sm)
+            .shadow(elevation = Spacing.md, shape = CircleShape)
+            .background(style.backgroundColor, CircleShape)
+            .padding(horizontal = Spacing.xl, vertical = Spacing.md),
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.spacedBy(Spacing.sm)
+    ) {
+        Icon(
+            imageVector = style.icon,
+            contentDescription = null,
+            tint = style.contentColor,
+            modifier = Modifier.size(Spacing.xl)
+        )
+        Text(
+            text = message,
+            color = style.contentColor,
+            fontSize = 14.sp,
+            fontWeight = FontWeight.Bold
+        )
     }
 }

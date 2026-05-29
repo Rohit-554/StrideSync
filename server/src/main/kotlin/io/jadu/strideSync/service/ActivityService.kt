@@ -41,12 +41,11 @@ class ActivityService(
             polyline = polyline,
         )
 
-        return activityRepository.findById(activityId)!!.toResponse()
+        return loadActivity(activityId).toResponse()
     }
 
     suspend fun getById(id: UUID): ActivityResponse =
-        activityRepository.findById(id)?.toResponse()
-            ?: error("Activity not found")
+        loadActivity(id).toResponse()
 
     suspend fun getByUser(userId: UUID, page: Int, size: Int): List<ActivityResponse> =
         activityRepository.findByUser(userId, page, size).map { it.toResponse() }
@@ -89,4 +88,8 @@ class ActivityService(
         startedAt = startedAt.toEpochMilli(),
         createdAt = createdAt.toEpochMilli(),
     )
+
+    private suspend fun loadActivity(activityId: UUID): ActivityRow =
+        activityRepository.findById(activityId)
+            ?: error("Activity not found")
 }

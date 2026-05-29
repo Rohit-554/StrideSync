@@ -56,7 +56,6 @@ class AuthRepositoryImpl(
         }
 
     override fun getCurrentUser(): User? {
-        // Return a basic user if logged in; in a real app this would come from cached profile data
         return if (isLoggedIn() && appPreferences.userId.isNotBlank()) {
             User(
                 id = appPreferences.userId,

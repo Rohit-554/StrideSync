@@ -15,7 +15,6 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
@@ -24,8 +23,6 @@ import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
-import androidx.compose.material3.OutlinedTextField
-import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -38,10 +35,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
-import io.jadu.strideSync.ui.components.StrideFloatingTextField
 import androidx.compose.ui.graphics.SolidColor
-import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.compose.ui.graphics.vector.path
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
@@ -50,7 +44,10 @@ import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import io.jadu.strideSync.ui.components.StrideFloatingTextField
 import io.jadu.strideSync.ui.components.StrideToast
+import io.jadu.strideSync.ui.theme.Spacing
+import io.jadu.strideSync.ui.theme.StrideColors
 import io.jadu.strideSync.ui.vectors.AppleIcon
 import io.jadu.strideSync.ui.vectors.GoogleIcon
 import io.jadu.strideSync.ui.viewmodel.AuthViewModel
@@ -77,20 +74,19 @@ fun LoginScreen(
             .fillMaxSize()
             .statusBarsPadding()
             .imePadding()
-            .padding(16.dp),
+            .padding(Spacing.lg),
         contentAlignment = Alignment.Center
     ) {
         Column(
             modifier = Modifier
                 .fillMaxWidth()
-                .widthIn(max = 360.dp),
+                .widthIn(max = Spacing.d360),
             horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.spacedBy(32.dp)
+            verticalArrangement = Arrangement.spacedBy(Spacing.xxxl)
         ) {
-            // Header Section
             Column(
                 horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.spacedBy(8.dp)
+                verticalArrangement = Arrangement.spacedBy(Spacing.sm)
             ) {
                 Text(
                     text = "StrideSync",
@@ -101,7 +97,7 @@ fun LoginScreen(
                 )
                 Text(
                     text = "Welcome back",
-                    color = Color(0xFFF0F0F0),
+                    color = StrideColors.TextPrimary,
                     fontSize = 40.sp,
                     fontWeight = FontWeight.ExtraBold,
                     lineHeight = 48.sp,
@@ -110,13 +106,11 @@ fun LoginScreen(
                 )
             }
 
-            // Input fields and submission Form
             LoginForm(
                 onLogin = { email, password -> viewModel.login(email, password) },
                 isLoading = uiState is AuthViewModel.UiState.Loading
             )
 
-            // Divider: or
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 verticalAlignment = Alignment.CenterVertically
@@ -127,10 +121,10 @@ fun LoginScreen(
                 )
                 Text(
                     text = "or",
-                    color = Color(0xFF9BA3B2),
+                    color = StrideColors.TextSecondary,
                     fontSize = 12.sp,
                     fontWeight = FontWeight.SemiBold,
-                    modifier = Modifier.padding(horizontal = 16.dp)
+                    modifier = Modifier.padding(horizontal = Spacing.lg)
                 )
                 HorizontalDivider(
                     modifier = Modifier.weight(1f),
@@ -138,13 +132,12 @@ fun LoginScreen(
                 )
             }
 
-            // Social Logins
             Column(
                 modifier = Modifier.fillMaxWidth(),
-                verticalArrangement = Arrangement.spacedBy(16.dp)
+                verticalArrangement = Arrangement.spacedBy(Spacing.lg)
             ) {
                 OutlinedButton(
-                    onClick = { /* Handle Google Sign In */ },
+                    onClick = { },
                     shape = CircleShape,
                     colors = ButtonDefaults.outlinedButtonColors(contentColor = Color.White),
                     border = ButtonDefaults.outlinedButtonBorder.copy(
@@ -152,21 +145,21 @@ fun LoginScreen(
                     ),
                     modifier = Modifier
                         .fillMaxWidth()
-                        .height(56.dp)
+                        .height(Spacing.d56)
                 ) {
                     Row(
-                        horizontalArrangement = Arrangement.spacedBy(12.dp),
+                        horizontalArrangement = Arrangement.spacedBy(Spacing.md),
                         verticalAlignment = Alignment.CenterVertically
                     ) {
                         Icon(
                             imageVector = GoogleIcon,
                             contentDescription = "Google Logo",
                             tint = Color.Unspecified,
-                            modifier = Modifier.size(20.dp)
+                            modifier = Modifier.size(Spacing.xl)
                         )
                         Text(
                             text = "Continue with Google",
-                            color = Color(0xFFF0F0F0),
+                            color = StrideColors.TextPrimary,
                             fontSize = 16.sp,
                             fontWeight = FontWeight.Normal
                         )
@@ -174,7 +167,7 @@ fun LoginScreen(
                 }
 
                 OutlinedButton(
-                    onClick = { /* Handle Apple Sign In */ },
+                    onClick = { },
                     shape = CircleShape,
                     colors = ButtonDefaults.outlinedButtonColors(contentColor = Color.White),
                     border = ButtonDefaults.outlinedButtonBorder.copy(
@@ -182,21 +175,21 @@ fun LoginScreen(
                     ),
                     modifier = Modifier
                         .fillMaxWidth()
-                        .height(56.dp)
+                        .height(Spacing.d56)
                 ) {
                     Row(
-                        horizontalArrangement = Arrangement.spacedBy(12.dp),
+                        horizontalArrangement = Arrangement.spacedBy(Spacing.md),
                         verticalAlignment = Alignment.CenterVertically
                     ) {
                         Icon(
                             imageVector = AppleIcon,
                             contentDescription = "Apple Logo",
                             tint = Color.White,
-                            modifier = Modifier.size(22.dp)
+                            modifier = Modifier.size(Spacing.d22)
                         )
                         Text(
                             text = "Continue with Apple",
-                            color = Color(0xFFF0F0F0),
+                            color = StrideColors.TextPrimary,
                             fontSize = 16.sp,
                             fontWeight = FontWeight.Normal
                         )
@@ -204,7 +197,6 @@ fun LoginScreen(
                 }
             }
 
-            // Bottom Navigation/Footer
             Row(
                 horizontalArrangement = Arrangement.Center,
                 verticalAlignment = Alignment.CenterVertically,
@@ -212,7 +204,7 @@ fun LoginScreen(
             ) {
                 Text(
                     text = "Don't have an account? ",
-                    color = Color(0xFF9BA3B2),
+                    color = StrideColors.TextSecondary,
                     fontSize = 14.sp
                 )
                 Text(
@@ -230,7 +222,7 @@ fun LoginScreen(
                 message = toastMessage,
                 modifier = Modifier
                     .align(Alignment.TopCenter)
-                    .padding(top = 8.dp),
+                    .padding(top = Spacing.sm),
                 onDismiss = { toastMessage = "" }
             )
         }
@@ -248,7 +240,7 @@ private fun LoginForm(
 
     Column(
         modifier = Modifier.fillMaxWidth(),
-        verticalArrangement = Arrangement.spacedBy(12.dp)
+        verticalArrangement = Arrangement.spacedBy(Spacing.md)
     ) {
         StrideFloatingTextField(
             value = email,
@@ -285,11 +277,11 @@ private fun LoginForm(
                 color = MaterialTheme.colorScheme.primary,
                 fontSize = 12.sp,
                 fontWeight = FontWeight.SemiBold,
-                modifier = Modifier.clickable { /* Handle forgot password */ }
+                modifier = Modifier.clickable { }
             )
         }
 
-        Spacer(modifier = Modifier.height(8.dp))
+        Spacer(modifier = Modifier.height(Spacing.sm))
 
         Button(
             onClick = { onLogin(email, password) },
@@ -301,19 +293,19 @@ private fun LoginForm(
             ),
             modifier = Modifier
                 .fillMaxWidth()
-                .height(56.dp)
+                .height(Spacing.d56)
                 .shadow(
-                    elevation = 8.dp,
+                    elevation = Spacing.sm,
                     shape = CircleShape,
-                    ambientColor = Color(0xFFFF571B),
-                    spotColor = Color(0xFFFF571B)
+                    ambientColor = StrideColors.BrandPrimary,
+                    spotColor = StrideColors.BrandPrimary
                 )
         ) {
             if (isLoading) {
                 CircularProgressIndicator(
                     color = MaterialTheme.colorScheme.onPrimaryContainer,
-                    strokeWidth = 2.dp,
-                    modifier = Modifier.size(24.dp)
+                    strokeWidth = Spacing.xxs,
+                    modifier = Modifier.size(Spacing.xxl)
                 )
             } else {
                 Text(

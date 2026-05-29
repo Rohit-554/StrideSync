@@ -1,16 +1,17 @@
 package io.jadu.strideSync.ui.vectors
 
+import io.jadu.strideSync.ui.theme.Spacing
+
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.graphics.vector.path
 import androidx.compose.ui.unit.dp
 
-// Google Icon
 val GoogleIcon = ImageVector.Builder(
     name = "GoogleIcon",
-    defaultWidth = 24.dp,
-    defaultHeight = 24.dp,
+    defaultWidth = Spacing.xxl,
+    defaultHeight = Spacing.xxl,
     viewportWidth = 24f,
     viewportHeight = 24f
 ).apply {
@@ -61,11 +62,10 @@ val GoogleIcon = ImageVector.Builder(
     }
 }.build()
 
-// Apple Icon
 val AppleIcon = ImageVector.Builder(
     name = "AppleIcon",
-    defaultWidth = 24.dp,
-    defaultHeight = 24.dp,
+    defaultWidth = Spacing.xxl,
+    defaultHeight = Spacing.xxl,
     viewportWidth = 24f,
     viewportHeight = 24f
 ).apply {

@@ -22,9 +22,6 @@ import java.time.temporal.ChronoUnit
 import java.util.UUID
 
 class SocialRepository {
-
-    // ── Statuses ──────────────────────────────────────────────────────────────
-
     suspend fun createStatus(userId: UUID, text: String, backgroundHex: String): StatusResponse = dbQuery {
         val now = Instant.now()
         val expiresAt = now.plus(24, ChronoUnit.HOURS)
@@ -52,7 +49,7 @@ class SocialRepository {
             backgroundHex = backgroundHex,
             createdAt = now.toEpochMilli(),
             expiresAt = expiresAt.toEpochMilli(),
-            isOwn = true
+            isOwn = true,
         )
     }
 
@@ -84,20 +81,15 @@ class SocialRepository {
                     backgroundHex = row[StatusesTable.backgroundHex],
                     createdAt = row[StatusesTable.createdAt].toEpochMilli(),
                     expiresAt = row[StatusesTable.expiresAt].toEpochMilli(),
-                    isOwn = row[StatusesTable.userId] == viewerId
+                    isOwn = row[StatusesTable.userId] == viewerId,
                 )
             }
             .distinctBy { it.userId }
             .sortedWith(compareByDescending<StatusResponse> { it.isOwn }.thenByDescending { it.createdAt })
     }
 
-    // ── Follow / Unfollow ────────────────────────────────────────────────────
-
     suspend fun follow(followerId: UUID, followeeId: UUID) = dbQuery {
-        val alreadyFollowing = FollowsTable.selectAll()
-            .where { (FollowsTable.followerId eq followerId) and (FollowsTable.followeeId eq followeeId) }
-            .singleOrNull()
-        if (alreadyFollowing == null) {
+        if (!followsRelationExists(followerId, followeeId)) {
             FollowsTable.insert {
                 it[FollowsTable.followerId] = followerId
                 it[FollowsTable.followeeId] = followeeId
@@ -123,13 +115,8 @@ class SocialRepository {
             .count().toInt()
     }
 
-    // ── Kudos ────────────────────────────────────────────────────────────────
-
     suspend fun addKudos(activityId: UUID, userId: UUID) = dbQuery {
-        val exists = KudosTable.selectAll()
-            .where { (KudosTable.activityId eq activityId) and (KudosTable.userId eq userId) }
-            .singleOrNull()
-        if (exists == null) {
+        if (!kudosExists(activityId, userId)) {
             KudosTable.insert {
                 it[KudosTable.activityId] = activityId
                 it[KudosTable.userId] = userId
@@ -150,12 +137,8 @@ class SocialRepository {
     }
 
     suspend fun hasKudosed(activityId: UUID, userId: UUID): Boolean = dbQuery {
-        KudosTable.selectAll()
-            .where { (KudosTable.activityId eq activityId) and (KudosTable.userId eq userId) }
-            .singleOrNull() != null
+        kudosExists(activityId, userId)
     }
-
-    // ── Comments ─────────────────────────────────────────────────────────────
 
     suspend fun addComment(activityId: UUID, userId: UUID, text: String): CommentResponse = dbQuery {
         val id = CommentsTable.insert {
@@ -203,8 +186,6 @@ class SocialRepository {
             .count().toInt()
     }
 
-    // ── User profile stats ───────────────────────────────────────────────────
-
     suspend fun activityCount(userId: UUID): Int = dbQuery {
         ActivitiesTable.selectAll()
             .where { ActivitiesTable.userId eq userId }
@@ -212,9 +193,7 @@ class SocialRepository {
     }
 
     suspend fun isFollowing(followerId: UUID, followeeId: UUID): Boolean = dbQuery {
-        FollowsTable.selectAll()
-            .where { (FollowsTable.followerId eq followerId) and (FollowsTable.followeeId eq followeeId) }
-            .singleOrNull() != null
+        followsRelationExists(followerId, followeeId)
     }
 
     suspend fun buildAthleteSummary(viewerId: UUID, user: UserRow): AthleteSummaryResponse {
@@ -224,7 +203,17 @@ class SocialRepository {
             avatarUrl = user.avatarUrl,
             followerCount = followerCount(user.id),
             activityCount = activityCount(user.id),
-            isFollowing = isFollowing(viewerId, user.id)
+            isFollowing = isFollowing(viewerId, user.id),
         )
     }
+
+    private fun followsRelationExists(followerId: UUID, followeeId: UUID): Boolean =
+        FollowsTable.selectAll()
+            .where { (FollowsTable.followerId eq followerId) and (FollowsTable.followeeId eq followeeId) }
+            .singleOrNull() != null
+
+    private fun kudosExists(activityId: UUID, userId: UUID): Boolean =
+        KudosTable.selectAll()
+            .where { (KudosTable.activityId eq activityId) and (KudosTable.userId eq userId) }
+            .singleOrNull() != null
 }

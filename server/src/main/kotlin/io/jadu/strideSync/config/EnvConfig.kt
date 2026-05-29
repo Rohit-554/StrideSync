@@ -21,15 +21,8 @@ object EnvConfig {
     fun require(name: String): String =
         get(name) ?: error("Required environment variable '$name' is not set")
 
-    private fun findEnvFile(): File? {
-        var current: File? = File(System.getProperty("user.dir")).absoluteFile
-        while (current != null) {
-            val candidate = current.resolve(".env")
-            if (candidate.isFile) {
-                return candidate
-            }
-            current = current.parentFile
-        }
-        return null
-    }
+    private fun findEnvFile(): File? =
+        generateSequence(File(System.getProperty("user.dir")).absoluteFile) { it.parentFile }
+            .map { it.resolve(".env") }
+            .firstOrNull(File::isFile)
 }

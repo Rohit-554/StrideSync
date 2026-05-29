@@ -2,10 +2,7 @@ package io.jadu.strideSync.utils
 
 import io.jadu.strideSync.domain.model.GpsPoint
 
-/**
- * Decodes a Google-encoded polyline string into a list of [GpsPoint].
- * Spec: https://developers.google.com/maps/documentation/utilities/polylinealgorithm
- */
+// Spec: https://developers.google.com/maps/documentation/utilities/polylinealgorithm
 object PolylineDecoder {
 
     fun decode(encoded: String): List<GpsPoint> {

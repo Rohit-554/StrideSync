@@ -34,21 +34,17 @@ class AuthViewModel(
     }
 
     fun login(email: String, password: String) {
-        _uiState.value = UiState.Loading
-        viewModelScope.launch {
-            authRepository.login(email, password)
-                .onSuccess { user -> _uiState.value = UiState.Success(user) }
-                .onFailure { error ->
-                    _uiState.value = UiState.Idle
-                    _errorEvent.emit(error.message.orEmpty())
-                }
-        }
+        authenticate { authRepository.login(email, password) }
     }
 
     fun register(email: String, displayName: String, password: String) {
+        authenticate { authRepository.register(email, displayName, password) }
+    }
+
+    private fun authenticate(authenticationCall: suspend () -> Result<User>) {
         _uiState.value = UiState.Loading
         viewModelScope.launch {
-            authRepository.register(email, displayName, password)
+            authenticationCall()
                 .onSuccess { user -> _uiState.value = UiState.Success(user) }
                 .onFailure { error ->
                     _uiState.value = UiState.Idle

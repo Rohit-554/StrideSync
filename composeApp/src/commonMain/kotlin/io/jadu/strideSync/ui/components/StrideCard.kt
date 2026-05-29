@@ -1,5 +1,8 @@
 package io.jadu.strideSync.ui.components
 
+import io.jadu.strideSync.ui.theme.Spacing
+
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
@@ -13,6 +16,8 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
@@ -29,8 +34,7 @@ import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.MoreVert
+import io.jadu.strideSync.ui.theme.StrideColors
 
 @Composable
 fun ActivityFeedCard(
@@ -42,96 +46,117 @@ fun ActivityFeedCard(
 ) {
     Card(
         modifier = modifier.fillMaxWidth(),
-        shape = RoundedCornerShape(12.dp),
-        colors = CardDefaults.cardColors(
-            containerColor = Color(0xFF1F0F0B) // surface container
-        )
+        shape = RoundedCornerShape(Spacing.md),
+        colors = CardDefaults.cardColors(containerColor = StrideColors.Surface)
     ) {
         Column(
-            modifier = Modifier.padding(24.dp),
-            verticalArrangement = Arrangement.spacedBy(16.dp)
+            modifier = Modifier.padding(Spacing.xxl),
+            verticalArrangement = Arrangement.spacedBy(Spacing.lg)
         ) {
-            // Header: User details
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.Top
-            ) {
-                Row(
-                    horizontalArrangement = Arrangement.spacedBy(16.dp),
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    // Fallback avatar
-                    Box(
-                        modifier = Modifier
-                            .size(48.dp)
-                            .border(1.dp, MaterialTheme.colorScheme.outline, CircleShape)
-                            .padding(2.dp),
-                        contentAlignment = Alignment.Center
-                    ) {
-                        Box(
-                            modifier = Modifier
-                                .fillMaxSize()
-                                .border(0.dp, Color.Transparent, CircleShape),
-                            contentAlignment = Alignment.Center
-                        ) {
-                            Text(
-                                text = title.take(2).uppercase(),
-                                color = MaterialTheme.colorScheme.primary,
-                                fontSize = 16.sp,
-                                fontWeight = FontWeight.Bold
-                            )
-                        }
-                    }
-                    Column {
-                        Text(
-                            text = title,
-                            color = Color(0xFFF0F0F0),
-                            fontSize = 16.sp,
-                            fontWeight = FontWeight.Bold
-                        )
-                        Text(
-                            text = "$location • $timeAgo",
-                            color = Color(0xFF9BA3B2),
-                            fontSize = 12.sp,
-                            fontWeight = FontWeight.Normal
-                        )
-                    }
-                }
-                IconButton(onClick = onMoreClick) {
-                    Icon(
-                        imageVector = Icons.Default.MoreVert,
-                        contentDescription = "More options",
-                        tint = Color(0xFF9BA3B2)
-                    )
-                }
-            }
-
-            // Map polyline drawing preview
-            Box(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(160.dp)
-                    .border(1.dp, MaterialTheme.colorScheme.surfaceVariant, RoundedCornerShape(8.dp))
-                    .padding(8.dp),
-                contentAlignment = Alignment.Center
-            ) {
-                Canvas(modifier = Modifier.fillMaxSize()) {
-                    val path = Path().apply {
-                        moveTo(0f, size.height * 0.8f)
-                        quadraticTo(size.width * 0.125f, size.height * 0.2f, size.width * 0.25f, size.height * 0.7f)
-                        quadraticTo(size.width * 0.375f, size.height * 0.3f, size.width * 0.5f, size.height * 0.4f)
-                        quadraticTo(size.width * 0.625f, size.height * 0.6f, size.width * 0.75f, size.height * 0.9f)
-                        quadraticTo(size.width * 0.875f, size.height * 0.4f, size.width, size.height * 0.3f)
-                    }
-                    drawPath(
-                        path = path,
-                        color = Color(0xFFFF571B), // Orange route color
-                        style = Stroke(width = 4.dp.toPx(), cap = StrokeCap.Round)
-                    )
-                }
-            }
+            ActivityCardHeader(
+                title = title,
+                location = location,
+                timeAgo = timeAgo,
+                onMoreClick = onMoreClick
+            )
+            RouteMapPreview()
         }
+    }
+}
+
+@Composable
+private fun ActivityCardHeader(
+    title: String,
+    location: String,
+    timeAgo: String,
+    onMoreClick: () -> Unit
+) {
+    Row(
+        modifier = Modifier.fillMaxWidth(),
+        horizontalArrangement = Arrangement.SpaceBetween,
+        verticalAlignment = Alignment.Top
+    ) {
+        AthleteInfo(title = title, location = location, timeAgo = timeAgo)
+        IconButton(onClick = onMoreClick) {
+            Icon(
+                imageVector = Icons.Default.MoreVert,
+                contentDescription = "More options",
+                tint = StrideColors.TextSecondary
+            )
+        }
+    }
+}
+
+@Composable
+private fun AthleteInfo(title: String, location: String, timeAgo: String) {
+    Row(
+        horizontalArrangement = Arrangement.spacedBy(Spacing.lg),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        InitialsAvatar(initials = title.take(2).uppercase())
+        Column {
+            Text(
+                text = title,
+                color = StrideColors.TextPrimary,
+                fontSize = 16.sp,
+                fontWeight = FontWeight.Bold
+            )
+            Text(
+                text = "$location • $timeAgo",
+                color = StrideColors.TextSecondary,
+                fontSize = 12.sp,
+                fontWeight = FontWeight.Normal
+            )
+        }
+    }
+}
+
+@Composable
+private fun InitialsAvatar(initials: String) {
+    Box(
+        modifier = Modifier
+            .size(Spacing.d48)
+            .border(Spacing.d1, MaterialTheme.colorScheme.outline, CircleShape)
+            .padding(Spacing.xxs),
+        contentAlignment = Alignment.Center
+    ) {
+        Text(
+            text = initials,
+            color = MaterialTheme.colorScheme.primary,
+            fontSize = 16.sp,
+            fontWeight = FontWeight.Bold
+        )
+    }
+}
+
+@Composable
+private fun RouteMapPreview() {
+    Box(
+        modifier = Modifier
+            .fillMaxWidth()
+            .height(Spacing.d160)
+            .border(Spacing.d1, MaterialTheme.colorScheme.surfaceVariant, RoundedCornerShape(Spacing.sm))
+            .padding(Spacing.sm),
+        contentAlignment = Alignment.Center
+    ) {
+        Canvas(modifier = Modifier.fillMaxSize()) {
+            val path = demoRoutePath()
+            drawPath(
+                path = path,
+                color = StrideColors.BrandPrimary,
+                style = Stroke(width = Spacing.xs.toPx(), cap = StrokeCap.Round)
+            )
+        }
+    }
+}
+
+private fun androidx.compose.ui.graphics.drawscope.DrawScope.demoRoutePath(): Path {
+    return Path().apply {
+        moveTo(0f, size.height * 0.8f)
+        quadraticTo(size.width * 0.125f, size.height * 0.2f, size.width * 0.25f, size.height * 0.7f)
+        quadraticTo(size.width * 0.375f, size.height * 0.3f, size.width * 0.5f, size.height * 0.4f)
+        quadraticTo(size.width * 0.625f, size.height * 0.6f, size.width * 0.75f, size.height * 0.9f)
+        quadraticTo(size.width * 0.875f, size.height * 0.4f, size.width, size.height * 0.3f)
     }
 }
 
@@ -146,134 +171,90 @@ fun StatGridCard(
 ) {
     Card(
         modifier = modifier.fillMaxWidth(),
-        shape = RoundedCornerShape(12.dp),
-        colors = CardDefaults.cardColors(
-            containerColor = Color(0xFF252830) // surface-alt
-        ),
-        border = androidx.compose.foundation.BorderStroke(2.dp, MaterialTheme.colorScheme.primary)
+        shape = RoundedCornerShape(Spacing.md),
+        colors = CardDefaults.cardColors(containerColor = StrideColors.SurfaceAlt),
+        border = BorderStroke(Spacing.xxs, MaterialTheme.colorScheme.primary)
     ) {
         Column(
-            modifier = Modifier.padding(24.dp),
-            verticalArrangement = Arrangement.spacedBy(24.dp)
+            modifier = Modifier.padding(Spacing.xxl),
+            verticalArrangement = Arrangement.spacedBy(Spacing.xxl)
         ) {
-            // Header row: SUMMARY + LIVE badge
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                Text(
-                    text = "SUMMARY",
-                    color = Color(0xFF9BA3B2),
-                    fontSize = 12.sp,
-                    fontWeight = FontWeight.Bold,
-                    letterSpacing = 1.sp
-                )
-                if (isLive) {
-                    Box(
-                        modifier = Modifier
-                            .border(1.dp, Color.Transparent, RoundedCornerShape(4.dp))
-                            .border(0.dp, Color.Transparent)
-                            .padding(horizontal = 8.dp, vertical = 4.dp)
-                            .border(0.dp, Color.Transparent)
-                            .border(0.dp, Color.Transparent)
-                    ) {
-                        Text(
-                            text = "LIVE",
-                            color = Color.White,
-                            fontSize = 10.sp,
-                            fontWeight = FontWeight.Bold,
-                            modifier = Modifier
-                                .border(0.dp, Color.Transparent)
-                                .padding(horizontal = 4.dp, vertical = 2.dp)
-                        )
-                    }
-                }
-            }
-
-            // Stats grid layout (2 columns x 2 rows)
-            Column(
-                modifier = Modifier.fillMaxWidth(),
-                verticalArrangement = Arrangement.spacedBy(24.dp)
-            ) {
-                Row(modifier = Modifier.fillMaxWidth()) {
-                    Column(
-                        modifier = Modifier.weight(1f),
-                        horizontalAlignment = Alignment.CenterHorizontally
-                    ) {
-                        Text(
-                            text = bpm,
-                            color = Color(0xFFF0F0F0),
-                            fontSize = 24.sp,
-                            fontWeight = FontWeight.ExtraBold,
-                            fontFamily = MaterialTheme.typography.headlineLarge.fontFamily
-                        )
-                        Text(
-                            text = "BPM",
-                            color = Color(0xFF9BA3B2),
-                            fontSize = 10.sp,
-                            fontWeight = FontWeight.Bold
-                        )
-                    }
-                    Column(
-                        modifier = Modifier.weight(1f),
-                        horizontalAlignment = Alignment.CenterHorizontally
-                    ) {
-                        Text(
-                            text = kmh,
-                            color = Color(0xFFF0F0F0),
-                            fontSize = 24.sp,
-                            fontWeight = FontWeight.ExtraBold,
-                            fontFamily = MaterialTheme.typography.headlineLarge.fontFamily
-                        )
-                        Text(
-                            text = "KM/H",
-                            color = Color(0xFF9BA3B2),
-                            fontSize = 10.sp,
-                            fontWeight = FontWeight.Bold
-                        )
-                    }
-                }
-
-                Row(modifier = Modifier.fillMaxWidth()) {
-                    Column(
-                        modifier = Modifier.weight(1f),
-                        horizontalAlignment = Alignment.CenterHorizontally
-                    ) {
-                        Text(
-                            text = elevGain,
-                            color = Color(0xFFF0F0F0),
-                            fontSize = 24.sp,
-                            fontWeight = FontWeight.ExtraBold,
-                            fontFamily = MaterialTheme.typography.headlineLarge.fontFamily
-                        )
-                        Text(
-                            text = "ELEV GAIN",
-                            color = Color(0xFF9BA3B2),
-                            fontSize = 10.sp,
-                            fontWeight = FontWeight.Bold
-                        )
-                    }
-                    Column(
-                        modifier = Modifier.weight(1f),
-                        horizontalAlignment = Alignment.CenterHorizontally
-                    ) {
-                        Text(
-                            text = distance,
-                            color = Color(0xFFF0F0F0),
-                            fontSize = 24.sp,
-                            fontWeight = FontWeight.ExtraBold,
-                            fontFamily = MaterialTheme.typography.headlineLarge.fontFamily
-                        )
-                        Text(
-                            text = "KM",
-                            color = Color(0xFF9BA3B2),
-                            fontSize = 10.sp,
-                            fontWeight = FontWeight.Bold
-                        )
-                    }
-                }
-            }
+            StatGridHeader(isLive = isLive)
+            StatGridBody(bpm = bpm, kmh = kmh, elevGain = elevGain, distance = distance)
         }
+    }
+}
+
+@Composable
+private fun StatGridHeader(isLive: Boolean) {
+    Row(
+        modifier = Modifier.fillMaxWidth(),
+        horizontalArrangement = Arrangement.SpaceBetween,
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Text(
+            text = "SUMMARY",
+            color = StrideColors.TextSecondary,
+            fontSize = 12.sp,
+            fontWeight = FontWeight.Bold,
+            letterSpacing = 1.sp
+        )
+        if (isLive) {
+            LiveBadge()
+        }
+    }
+}
+
+@Composable
+private fun LiveBadge() {
+    Box(
+        modifier = Modifier
+            .padding(horizontal = Spacing.sm, vertical = Spacing.xs)
+    ) {
+        Text(
+            text = "LIVE",
+            color = Color.White,
+            fontSize = 10.sp,
+            fontWeight = FontWeight.Bold
+        )
+    }
+}
+
+@Composable
+private fun StatGridBody(bpm: String, kmh: String, elevGain: String, distance: String) {
+    Column(
+        modifier = Modifier.fillMaxWidth(),
+        verticalArrangement = Arrangement.spacedBy(Spacing.xxl)
+    ) {
+        Row(modifier = Modifier.fillMaxWidth()) {
+            StatGridCell(value = bpm, label = "BPM", modifier = Modifier.weight(1f))
+            StatGridCell(value = kmh, label = "KM/H", modifier = Modifier.weight(1f))
+        }
+        Row(modifier = Modifier.fillMaxWidth()) {
+            StatGridCell(value = elevGain, label = "ELEV GAIN", modifier = Modifier.weight(1f))
+            StatGridCell(value = distance, label = "KM", modifier = Modifier.weight(1f))
+        }
+    }
+}
+
+@Composable
+private fun StatGridCell(value: String, label: String, modifier: Modifier = Modifier) {
+    Column(
+        modifier = modifier,
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        Text(
+            text = value,
+            color = StrideColors.TextPrimary,
+            fontSize = 24.sp,
+            fontWeight = FontWeight.ExtraBold,
+            fontFamily = MaterialTheme.typography.headlineLarge.fontFamily
+        )
+        Text(
+            text = label,
+            color = StrideColors.TextSecondary,
+            fontSize = 10.sp,
+            fontWeight = FontWeight.Bold
+        )
     }
 }

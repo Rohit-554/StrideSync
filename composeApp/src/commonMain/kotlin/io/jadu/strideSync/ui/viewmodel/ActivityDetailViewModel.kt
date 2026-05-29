@@ -33,22 +33,14 @@ class ActivityDetailViewModel(
     val uiState: StateFlow<ActivityDetailUiState> = _uiState.asStateFlow()
 
     fun loadActivity(activityId: String) {
-        _uiState.value = _uiState.value.copy(isLoading = true, errorMessage = null)
+        setLoadingState()
         viewModelScope.launch {
             activityRepository.getActivityById(activityId)
                 .onSuccess { activity ->
-                    _uiState.value = _uiState.value.copy(
-                        activity = activity,
-                        isLoading = false
-                    )
+                    _uiState.value = _uiState.value.copy(activity = activity, isLoading = false)
                     loadActivitySocialData(activity)
                 }
-                .onFailure { error ->
-                    _uiState.value = _uiState.value.copy(
-                        isLoading = false,
-                        errorMessage = error.toUiMessage()
-                    )
-                }
+                .onFailure { error -> showError(error.toUiMessage(), isLoading = false) }
         }
     }
 
@@ -94,10 +86,16 @@ class ActivityDetailViewModel(
                     )
                 }
                 .onFailure { error ->
-                    _uiState.value = _uiState.value.copy(
-                        errorMessage = error.toUiMessage()
-                    )
+                    showError(error.toUiMessage())
                 }
         }
+    }
+
+    private fun setLoadingState() {
+        _uiState.value = _uiState.value.copy(isLoading = true, errorMessage = null)
+    }
+
+    private fun showError(message: String, isLoading: Boolean = _uiState.value.isLoading) {
+        _uiState.value = _uiState.value.copy(isLoading = isLoading, errorMessage = message)
     }
 }

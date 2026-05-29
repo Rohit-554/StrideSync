@@ -1,5 +1,7 @@
 package io.jadu.strideSync.ui.screens
 
+import io.jadu.strideSync.ui.theme.Spacing
+
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -44,9 +46,9 @@ fun PermissionDemoScreen(onBack: () -> Unit) {
             modifier = Modifier
                 .fillMaxSize()
                 .padding(padding)
-                .padding(16.dp)
+                .padding(Spacing.lg)
                 .verticalScroll(rememberScrollState()),
-            verticalArrangement = Arrangement.spacedBy(16.dp),
+            verticalArrangement = Arrangement.spacedBy(Spacing.lg),
         ) {
             Permission.entries.forEach { permission ->
                 PermissionRow(permission = permission, controller = controller)
@@ -66,7 +68,7 @@ fun PermissionDemoScreen(onBack: () -> Unit) {
 private fun PermissionRow(permission: Permission, controller: PermissionController) {
     val state = rememberPermissionState(permission, controller)
 
-    Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
+    Column(verticalArrangement = Arrangement.spacedBy(Spacing.xs)) {
         Text(text = permission.name, style = MaterialTheme.typography.titleSmall)
         PermissionStatusLabel(state)
         PermissionAction(state)

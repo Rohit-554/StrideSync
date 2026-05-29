@@ -48,7 +48,6 @@ fun appModule(): Module = module {
     single<FeedRepository> { FeedRepositoryImpl(get(), get()) }
     single<SocialRepository> { SocialRepositoryImpl(get(), get()) }
 
-    // GPS / Tracking
     single { TrackingEngine(get(), get()) }
 
     viewModel { AuthViewModel(get()) }

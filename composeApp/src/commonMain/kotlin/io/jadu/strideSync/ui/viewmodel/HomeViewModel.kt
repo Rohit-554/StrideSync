@@ -2,17 +2,12 @@ package io.jadu.strideSync.ui.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import io.jadu.strideSync.data.local.AppDatabase
-import io.jadu.strideSync.network.ApiService
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 
-class HomeViewModel(
-    private val apiService: ApiService? = null,
-    private val database: AppDatabase? = null
-) : ViewModel() {
+class HomeViewModel : ViewModel() {
 
     private val _state = MutableStateFlow<HomeUiState>(HomeUiState.Loading)
     val state: StateFlow<HomeUiState> = _state.asStateFlow()

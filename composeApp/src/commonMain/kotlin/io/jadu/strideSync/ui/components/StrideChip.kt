@@ -1,5 +1,7 @@
 package io.jadu.strideSync.ui.components
 
+import io.jadu.strideSync.ui.theme.Spacing
+
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -8,7 +10,6 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -17,14 +18,11 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.compose.ui.graphics.vector.path
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-
-
+import io.jadu.strideSync.ui.theme.StrideColors
 
 @Composable
 fun StrideChip(
@@ -35,24 +33,24 @@ fun StrideChip(
     onClick: () -> Unit = {}
 ) {
     val containerColor = if (isSelected) MaterialTheme.colorScheme.primaryContainer else MaterialTheme.colorScheme.surfaceVariant
-    val contentColor = if (isSelected) Color.White else Color(0xFFF0F0F0)
+    val contentColor = if (isSelected) StrideColors.White else StrideColors.TextPrimary
 
     Box(
         modifier = modifier
             .background(containerColor, shape = CircleShape)
             .clickable { onClick() }
-            .padding(horizontal = 16.dp, vertical = 8.dp),
+            .padding(horizontal = Spacing.lg, vertical = Spacing.sm),
         contentAlignment = Alignment.Center
     ) {
         Row(
-            horizontalArrangement = Arrangement.spacedBy(8.dp),
+            horizontalArrangement = Arrangement.spacedBy(Spacing.sm),
             verticalAlignment = Alignment.CenterVertically
         ) {
             Icon(
                 imageVector = icon,
                 contentDescription = null,
                 tint = contentColor,
-                modifier = Modifier.size(16.dp)
+                modifier = Modifier.size(Spacing.lg)
             )
             Text(
                 text = text.uppercase(),
@@ -73,19 +71,19 @@ fun StrideIconButton(
     modifier: Modifier = Modifier,
     isFavoriteActive: Boolean = false
 ) {
-    val tintColor = if (isFavoriteActive) MaterialTheme.colorScheme.primary else Color(0xFF9BA3B2)
-    
+    val tintColor = if (isFavoriteActive) MaterialTheme.colorScheme.primary else StrideColors.TextSecondary
+
     IconButton(
         onClick = onClick,
         modifier = modifier
-            .size(40.dp)
-            .background(Color(0xFF252830), shape = CircleShape) // surface-alt
+            .size(Spacing.d40)
+            .background(StrideColors.SurfaceAlt, shape = CircleShape)
     ) {
         Icon(
             imageVector = icon,
             contentDescription = contentDescription,
             tint = tintColor,
-            modifier = Modifier.size(20.dp)
+            modifier = Modifier.size(Spacing.xl)
         )
     }
 }

@@ -12,6 +12,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.vector.ImageVector
 import io.jadu.strideSync.domain.model.SportType
 
 @Composable
@@ -20,14 +21,7 @@ fun SportTypeIcon(
     modifier: Modifier = Modifier,
     tint: Color = MaterialTheme.colorScheme.primary
 ) {
-    val imageVector = when (sportType) {
-        SportType.Run -> Icons.AutoMirrored.Filled.DirectionsRun
-        SportType.Ride -> Icons.AutoMirrored.Filled.DirectionsBike
-        SportType.Hike -> Icons.Default.Hiking
-        SportType.Swim -> Icons.Default.Pool
-        SportType.Walk -> Icons.AutoMirrored.Filled.DirectionsWalk
-        SportType.Other -> Icons.Default.QuestionMark
-    }
+    val imageVector = iconForSport(sportType)
 
     Icon(
         imageVector = imageVector,
@@ -35,4 +29,13 @@ fun SportTypeIcon(
         modifier = modifier,
         tint = tint
     )
+}
+
+private fun iconForSport(sportType: SportType): ImageVector = when (sportType) {
+    SportType.Run -> Icons.AutoMirrored.Filled.DirectionsRun
+    SportType.Ride -> Icons.AutoMirrored.Filled.DirectionsBike
+    SportType.Hike -> Icons.Default.Hiking
+    SportType.Swim -> Icons.Default.Pool
+    SportType.Walk -> Icons.AutoMirrored.Filled.DirectionsWalk
+    SportType.Other -> Icons.Default.QuestionMark
 }

@@ -39,12 +39,7 @@ class ProfileViewModel(
     fun loadProfile() {
         _uiState.value = _uiState.value.copy(isLoading = true, errorMessage = null)
         viewModelScope.launch {
-            // Get current user from auth repository
-            val currentUser = authRepository.getCurrentUser()
-                ?: run {
-                    _uiState.value = _uiState.value.copy(isLoading = false, errorMessage = "Not logged in")
-                    return@launch
-                }
+            val currentUser = requireAuthenticatedUser() ?: return@launch
 
             socialRepository.getUserProfile(currentUser.id)
                 .onSuccess { profile ->
@@ -73,6 +68,14 @@ class ProfileViewModel(
                     )
                 }
         }
+    }
+
+    private fun requireAuthenticatedUser(): User? {
+        val currentUser = authRepository.getCurrentUser() ?: run {
+            _uiState.value = _uiState.value.copy(isLoading = false, errorMessage = "Not logged in")
+            return null
+        }
+        return currentUser
     }
 
     fun logout() {

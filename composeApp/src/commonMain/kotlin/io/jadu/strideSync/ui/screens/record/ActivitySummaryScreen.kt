@@ -1,5 +1,7 @@
 package io.jadu.strideSync.ui.screens.record
 
+import io.jadu.strideSync.ui.theme.Spacing
+
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -66,6 +68,7 @@ import io.jadu.strideSync.ui.theme.Background
 import io.jadu.strideSync.ui.theme.Primary
 import io.jadu.strideSync.ui.theme.PrimaryContainer
 import io.jadu.strideSync.ui.theme.Success
+import io.jadu.strideSync.ui.theme.StrideColors
 import io.jadu.strideSync.ui.theme.TertiaryContainer
 
 @Composable
@@ -97,42 +100,42 @@ fun ActivitySummaryScreen(
             modifier = Modifier
                 .fillMaxSize()
                 .verticalScroll(rememberScrollState())
-                .padding(horizontal = 16.dp)
-                .padding(top = 8.dp)
+                .padding(horizontal = Spacing.lg)
+                .padding(top = Spacing.sm)
                 .windowInsetsPadding(WindowInsets.navigationBars),
-            verticalArrangement = Arrangement.spacedBy(0.dp)
+            verticalArrangement = Arrangement.spacedBy(Spacing.d0)
         ) {
-            Spacer(Modifier.height(16.dp))
+            Spacer(Modifier.height(Spacing.lg))
             ActivityHeader()
-            Spacer(Modifier.height(16.dp))
+            Spacer(Modifier.height(Spacing.lg))
             RouteMapPreview()
-            Spacer(Modifier.height(16.dp))
+            Spacer(Modifier.height(Spacing.lg))
             StatsGrid(
                 distanceKm = distanceKm,
                 duration = duration,
                 pace = pace
             )
-            Spacer(Modifier.height(24.dp))
+            Spacer(Modifier.height(Spacing.xxl))
             StrideFloatingTextField(
                 value = activityTitle,
                 onValueChange = { activityTitle = it },
                 label = "Title your activity"
             )
-            Spacer(Modifier.height(24.dp))
+            Spacer(Modifier.height(Spacing.xxl))
             StridePrimaryButton(
                 text = if (isSaving) "Saving…" else "Save Activity",
                 onClick = { if (!isSaving) onSave(activityTitle) }
             )
             if (isSaving) {
-                Spacer(Modifier.height(12.dp))
+                Spacer(Modifier.height(Spacing.md))
                 CircularProgressIndicator(
                     color = Primary,
-                    modifier = Modifier.size(28.dp).align(Alignment.CenterHorizontally)
+                    modifier = Modifier.size(Spacing.d28).align(Alignment.CenterHorizontally)
                 )
             }
-            Spacer(Modifier.height(12.dp))
+            Spacer(Modifier.height(Spacing.md))
             StrideSecondaryButton(text = "Discard", onClick = { if (!isSaving) onDiscard() })
-            Spacer(Modifier.height(32.dp))
+            Spacer(Modifier.height(Spacing.xxxl))
         }
 
         if (toastMessage.isNotEmpty()) {
@@ -140,7 +143,7 @@ fun ActivitySummaryScreen(
                 message = toastMessage,
                 modifier = Modifier
                     .align(Alignment.TopCenter)
-                    .padding(top = 16.dp),
+                    .padding(top = Spacing.lg),
                 onDismiss = { toastMessage = "" }
             )
         }
@@ -149,11 +152,11 @@ fun ActivitySummaryScreen(
 
 @Composable
 private fun ConfettiLayer() {
-    Box(modifier = Modifier.fillMaxWidth().height(80.dp)) {
-        Box(Modifier.padding(top = 4.dp).offset(x = 80.dp).size(8.dp).background(PrimaryContainer.copy(alpha = 0.8f), CircleShape))
-        Box(Modifier.padding(top = 48.dp, start = 40.dp).size(12.dp).background(TertiaryContainer.copy(alpha = 0.6f), CircleShape))
-        Box(Modifier.align(Alignment.TopEnd).padding(top = 8.dp, end = 80.dp).size(8.dp).background(PrimaryContainer.copy(alpha = 0.9f), CircleShape))
-        Box(Modifier.align(Alignment.TopEnd).padding(top = 64.dp, end = 48.dp).size(6.dp).background(Success.copy(alpha = 0.7f), CircleShape))
+    Box(modifier = Modifier.fillMaxWidth().height(Spacing.d80)) {
+        Box(Modifier.padding(top = Spacing.xs).offset(x = Spacing.d80).size(Spacing.sm).background(PrimaryContainer.copy(alpha = 0.8f), CircleShape))
+        Box(Modifier.padding(top = Spacing.d48, start = Spacing.d40).size(Spacing.md).background(TertiaryContainer.copy(alpha = 0.6f), CircleShape))
+        Box(Modifier.align(Alignment.TopEnd).padding(top = Spacing.sm, end = Spacing.d80).size(Spacing.sm).background(PrimaryContainer.copy(alpha = 0.9f), CircleShape))
+        Box(Modifier.align(Alignment.TopEnd).padding(top = Spacing.d64, end = Spacing.d48).size(Spacing.d6).background(Success.copy(alpha = 0.7f), CircleShape))
     }
 }
 
@@ -161,10 +164,10 @@ private fun ConfettiLayer() {
 private fun ActivityHeader() {
     Column(modifier = Modifier.fillMaxWidth(), horizontalAlignment = Alignment.CenterHorizontally) {
         Text(text = "MORNING RUN", color = Primary, fontSize = 12.sp, fontWeight = FontWeight.SemiBold, letterSpacing = 1.5.sp, style = MaterialTheme.typography.labelSmall)
-        Spacer(Modifier.height(4.dp))
+        Spacer(Modifier.height(Spacing.xs))
         Box(contentAlignment = Alignment.BottomCenter) {
-            Text(text = "Activity Complete!", color = Color(0xFFF0F0F0), fontSize = 32.sp, fontWeight = FontWeight.Bold, textAlign = TextAlign.Center, style = MaterialTheme.typography.headlineLarge)
-            Box(modifier = Modifier.padding(top = 44.dp).width(48.dp).height(4.dp).background(Primary, CircleShape))
+            Text(text = "Activity Complete!", color = StrideColors.TextPrimary, fontSize = 32.sp, fontWeight = FontWeight.Bold, textAlign = TextAlign.Center, style = MaterialTheme.typography.headlineLarge)
+            Box(modifier = Modifier.padding(top = Spacing.d44).width(Spacing.d48).height(Spacing.xs).background(Primary, CircleShape))
         }
     }
 }
@@ -174,22 +177,23 @@ private fun RouteMapPreview() {
     Box(
         modifier = Modifier
             .fillMaxWidth()
-            .height(240.dp)
-            .clip(RoundedCornerShape(12.dp))
-            .background(Color(0xFF252830))
-            .border(1.dp, Color(0xFF44302A), RoundedCornerShape(12.dp))
+            .height(Spacing.d240)
+            .clip(RoundedCornerShape(Spacing.md))
+            .background(StrideColors.SurfaceAlt)
+            .border(Spacing.d1, StrideColors.SurfaceDivider, RoundedCornerShape(Spacing.md))
     ) {
         Canvas(modifier = Modifier.fillMaxSize()) {
-            val gridColor = Color(0xFF2A2E38)
+            val gridColor = StrideColors.SurfaceAlt
             var x = 0f
-            while (x < size.width) { drawLine(gridColor, Offset(x, 0f), Offset(x, size.height), strokeWidth = 1f); x += 48.dp.toPx() }
+            while (x < size.width) { drawLine(gridColor, Offset(x, 0f), Offset(x, size.height), strokeWidth = 1f); x += Spacing.d48.toPx() }
             var y = 0f
-            while (y < size.height) { drawLine(gridColor, Offset(0f, y), Offset(size.width, y), strokeWidth = 1f); y += 48.dp.toPx() }
+            while (y < size.height) { drawLine(gridColor, Offset(0f, y), Offset(size.width, y), strokeWidth = 1f); y += Spacing.d48.toPx() }
 
-            drawLine(Color(0xFF353A47), Offset(0f, size.height * 0.45f), Offset(size.width, size.height * 0.45f), strokeWidth = 10f)
-            drawLine(Color(0xFF353A47), Offset(size.width * 0.35f, 0f), Offset(size.width * 0.35f, size.height), strokeWidth = 10f)
-            drawLine(Color(0xFF353A47), Offset(size.width * 0.7f, 0f), Offset(size.width * 0.7f, size.height), strokeWidth = 10f)
-            drawLine(Color(0xFF353A47), Offset(0f, size.height * 0.75f), Offset(size.width, size.height * 0.75f), strokeWidth = 10f)
+            val streetColor = StrideColors.SurfaceDivider
+            drawLine(streetColor, Offset(0f, size.height * 0.45f), Offset(size.width, size.height * 0.45f), strokeWidth = 10f)
+            drawLine(streetColor, Offset(size.width * 0.35f, 0f), Offset(size.width * 0.35f, size.height), strokeWidth = 10f)
+            drawLine(streetColor, Offset(size.width * 0.7f, 0f), Offset(size.width * 0.7f, size.height), strokeWidth = 10f)
+            drawLine(streetColor, Offset(0f, size.height * 0.75f), Offset(size.width, size.height * 0.75f), strokeWidth = 10f)
 
             val routePath = Path().apply {
                 moveTo(size.width * 0.18f, size.height * 0.75f)
@@ -198,13 +202,13 @@ private fun RouteMapPreview() {
                 quadraticTo(size.width * 0.52f, size.height * 0.15f, size.width * 0.7f, size.height * 0.15f)
                 lineTo(size.width * 0.82f, size.height * 0.15f)
             }
-            drawPath(routePath, Color(0xFFFF571B).copy(alpha = 0.25f), style = Stroke(width = 14f, cap = StrokeCap.Round, join = StrokeJoin.Round))
-            drawPath(routePath, Color(0xFFFF571B), style = Stroke(width = 4f, cap = StrokeCap.Round, join = StrokeJoin.Round))
+            drawPath(routePath, StrideColors.BrandPrimary.copy(alpha = 0.25f), style = Stroke(width = 14f, cap = StrokeCap.Round, join = StrokeJoin.Round))
+            drawPath(routePath, StrideColors.BrandPrimary, style = Stroke(width = 4f, cap = StrokeCap.Round, join = StrokeJoin.Round))
         }
 
-        Box(modifier = Modifier.fillMaxSize().background(Brush.linearGradient(colors = listOf(Color.Transparent, Color(0xFFFF571B).copy(alpha = 0.06f), Color.Transparent))))
-        Box(modifier = Modifier.align(Alignment.TopStart).padding(start = 68.dp, top = 148.dp).size(14.dp).shadow(4.dp, CircleShape).background(Color.White, CircleShape).border(3.dp, Color(0xFF1F0F0B), CircleShape))
-        Icon(imageVector = Icons.Default.LocationOn, contentDescription = "Finish", tint = Primary, modifier = Modifier.align(Alignment.BottomEnd).padding(end = 108.dp, bottom = 56.dp).size(28.dp))
+        Box(modifier = Modifier.fillMaxSize().background(Brush.linearGradient(colors = listOf(Color.Transparent, StrideColors.BrandPrimary.copy(alpha = 0.06f), Color.Transparent))))
+        Box(modifier = Modifier.align(Alignment.TopStart).padding(start = Spacing.d68, top = Spacing.d148).size(Spacing.d14).shadow(Spacing.xs, CircleShape).background(StrideColors.White, CircleShape).border(Spacing.d3, StrideColors.Surface, CircleShape))
+        Icon(imageVector = Icons.Default.LocationOn, contentDescription = "Finish", tint = Primary, modifier = Modifier.align(Alignment.BottomEnd).padding(end = Spacing.d108, bottom = Spacing.d56).size(Spacing.d28))
     }
 }
 
@@ -214,12 +218,12 @@ private fun StatsGrid(
     duration: String,
     pace: String
 ) {
-    Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
-        Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(12.dp)) {
+    Column(verticalArrangement = Arrangement.spacedBy(Spacing.md)) {
+        Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(Spacing.md)) {
             StatCard(icon = Icons.Default.Route, value = distanceKm, label = "KM", modifier = Modifier.weight(1f))
             StatCard(icon = Icons.Default.Timer, value = duration, label = "DURATION", modifier = Modifier.weight(1f))
         }
-        Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(12.dp)) {
+        Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(Spacing.md)) {
             BestPaceStatCard(pace = pace, modifier = Modifier.weight(1f))
             StatCard(icon = Icons.Default.Terrain, value = "0", label = "ELEV (M)", modifier = Modifier.weight(1f))
         }
@@ -230,16 +234,16 @@ private fun StatsGrid(
 private fun StatCard(icon: ImageVector, value: String, label: String, modifier: Modifier = Modifier, highlighted: Boolean = false) {
     Box(
         modifier = modifier
-            .clip(RoundedCornerShape(12.dp))
-            .background(Color(0xFF1F0F0B))
-            .then(if (highlighted) Modifier.border(2.dp, Primary.copy(alpha = 0.2f), RoundedCornerShape(12.dp)) else Modifier)
-            .padding(vertical = 16.dp, horizontal = 12.dp),
+            .clip(RoundedCornerShape(Spacing.md))
+            .background(StrideColors.Surface)
+            .then(if (highlighted) Modifier.border(Spacing.xxs, Primary.copy(alpha = 0.2f), RoundedCornerShape(Spacing.md)) else Modifier)
+            .padding(vertical = Spacing.lg, horizontal = Spacing.md),
         contentAlignment = Alignment.Center
     ) {
-        Column(horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.spacedBy(4.dp)) {
-            Icon(imageVector = icon, contentDescription = label, tint = Color(0xFF9BA3B2), modifier = Modifier.size(20.dp))
-            Text(text = value, color = Color(0xFFF0F0F0), fontSize = 36.sp, fontWeight = FontWeight.ExtraBold, letterSpacing = (-1).sp, style = MaterialTheme.typography.displaySmall)
-            Text(text = label, color = Color(0xFF9BA3B2), fontSize = 10.sp, fontWeight = FontWeight.Bold, letterSpacing = 1.sp)
+        Column(horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.spacedBy(Spacing.xs)) {
+            Icon(imageVector = icon, contentDescription = label, tint = StrideColors.TextSecondary, modifier = Modifier.size(Spacing.xl))
+            Text(text = value, color = StrideColors.TextPrimary, fontSize = 36.sp, fontWeight = FontWeight.ExtraBold, letterSpacing = (-1).sp, style = MaterialTheme.typography.displaySmall)
+            Text(text = label, color = StrideColors.TextSecondary, fontSize = 10.sp, fontWeight = FontWeight.Bold, letterSpacing = 1.sp)
         }
     }
 }
@@ -254,13 +258,13 @@ private fun BestPaceStatCard(
         Box(
             modifier = Modifier
                 .align(Alignment.BottomCenter)
-                .offset(y = 14.dp)
-                .background(Color(0xFF252830), RoundedCornerShape(20.dp))
-                .border(1.dp, Primary, RoundedCornerShape(20.dp))
-                .padding(horizontal = 8.dp, vertical = 3.dp)
+                .offset(y = Spacing.d14)
+                .background(StrideColors.SurfaceAlt, RoundedCornerShape(Spacing.xl))
+                .border(Spacing.d1, Primary, RoundedCornerShape(Spacing.xl))
+                .padding(horizontal = Spacing.sm, vertical = Spacing.d3)
         ) {
-            Row(horizontalArrangement = Arrangement.spacedBy(4.dp), verticalAlignment = Alignment.CenterVertically) {
-                Icon(imageVector = Icons.Default.Star, contentDescription = null, tint = Primary, modifier = Modifier.size(12.dp))
+            Row(horizontalArrangement = Arrangement.spacedBy(Spacing.xs), verticalAlignment = Alignment.CenterVertically) {
+                Icon(imageVector = Icons.Default.Star, contentDescription = null, tint = Primary, modifier = Modifier.size(Spacing.md))
                 Text(text = "BEST PACE!", color = Primary, fontSize = 10.sp, fontWeight = FontWeight.Bold, letterSpacing = 0.5.sp)
             }
         }

@@ -4,6 +4,7 @@ import io.jadu.strideSync.data.local.dao.FeedDao
 import io.jadu.strideSync.data.remote.api.SocialApi
 import io.jadu.strideSync.data.remote.dto.AthleteSummaryResponse
 import io.jadu.strideSync.data.remote.dto.CommentResponse
+import io.jadu.strideSync.data.remote.dto.StatusResponse
 import io.jadu.strideSync.data.remote.dto.UserProfileResponse
 import io.jadu.strideSync.domain.model.AthleteSummary
 import io.jadu.strideSync.domain.model.Comment
@@ -102,7 +103,7 @@ internal fun AthleteSummaryResponse.toDomain(): AthleteSummary = AthleteSummary(
     isFollowing = isFollowing
 )
 
-internal fun io.jadu.strideSync.data.remote.dto.StatusResponse.toDomain(): StatusItem = StatusItem(
+internal fun StatusResponse.toDomain(): StatusItem = StatusItem(
     id = id,
     userId = userId,
     displayName = displayName,

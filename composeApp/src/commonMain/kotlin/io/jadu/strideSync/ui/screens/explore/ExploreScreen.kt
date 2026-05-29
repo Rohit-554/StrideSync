@@ -1,5 +1,7 @@
 package io.jadu.strideSync.ui.screens.explore
 
+import io.jadu.strideSync.ui.theme.Spacing
+
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -41,8 +43,11 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil3.compose.AsyncImage
 import io.jadu.strideSync.domain.model.AthleteSummary
 import io.jadu.strideSync.ui.components.StrideBottomNavigation
+import io.jadu.strideSync.ui.theme.StrideColors
 import io.jadu.strideSync.ui.viewmodel.ExploreViewModel
 import org.koin.compose.viewmodel.koinViewModel
+
+private const val EXPLORE_TAB = "explore"
 
 @Composable
 fun ExploreScreen(
@@ -61,7 +66,7 @@ fun ExploreScreen(
         containerColor = MaterialTheme.colorScheme.background,
         bottomBar = {
             StrideBottomNavigation(
-                selectedTab = "explore",
+                selectedTab = EXPLORE_TAB,
                 onTabSelected = { tab ->
                     when (tab) {
                         "home" -> onNavigateToFeed()
@@ -77,8 +82,8 @@ fun ExploreScreen(
                 .fillMaxSize()
                 .statusBarsPadding()
                 .padding(innerPadding),
-            contentPadding = PaddingValues(16.dp),
-            verticalArrangement = Arrangement.spacedBy(16.dp)
+            contentPadding = PaddingValues(Spacing.lg),
+            verticalArrangement = Arrangement.spacedBy(Spacing.lg)
         ) {
             item {
                 Text(
@@ -103,16 +108,16 @@ fun ExploreScreen(
                             imageVector = Icons.Default.Search,
                             contentDescription = null,
                             tint = MaterialTheme.colorScheme.onSurfaceVariant,
-                            modifier = Modifier.size(20.dp)
+                            modifier = Modifier.size(Spacing.xl)
                         )
                     },
                     singleLine = true,
-                    shape = RoundedCornerShape(24.dp),
+                    shape = RoundedCornerShape(Spacing.xxl),
                     colors = OutlinedTextFieldDefaults.colors(
                         focusedBorderColor = MaterialTheme.colorScheme.primaryContainer,
                         unfocusedBorderColor = Color.Transparent,
-                        focusedContainerColor = Color(0xFF252830),
-                        unfocusedContainerColor = Color(0xFF252830),
+                        focusedContainerColor = StrideColors.SurfaceAlt,
+                        unfocusedContainerColor = StrideColors.SurfaceAlt,
                         focusedTextColor = MaterialTheme.colorScheme.onBackground,
                         unfocusedTextColor = MaterialTheme.colorScheme.onBackground
                     ),
@@ -138,10 +143,10 @@ fun ExploreScreen(
                             color = MaterialTheme.colorScheme.primaryContainer,
                             style = MaterialTheme.typography.labelMedium,
                             modifier = Modifier
-                                .clip(RoundedCornerShape(16.dp))
+                                .clip(RoundedCornerShape(Spacing.lg))
                                 .background(MaterialTheme.colorScheme.surface.copy(alpha = 0.85f))
                                 .clickable(onClick = viewModel::loadSuggestions)
-                                .padding(horizontal = 10.dp, vertical = 6.dp)
+                                .padding(horizontal = Spacing.d10, vertical = Spacing.d6)
                         )
                     }
                 }
@@ -154,7 +159,7 @@ fun ExploreScreen(
                     Box(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .padding(vertical = 48.dp),
+                            .padding(vertical = Spacing.d48),
                         contentAlignment = Alignment.Center
                     ) {
                         CircularProgressIndicator(color = MaterialTheme.colorScheme.primary)
@@ -194,20 +199,20 @@ private fun AthleteRow(
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(vertical = 4.dp),
+            .padding(vertical = Spacing.xs),
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically
     ) {
         Row(
             modifier = Modifier.weight(1f),
-            horizontalArrangement = Arrangement.spacedBy(12.dp),
+            horizontalArrangement = Arrangement.spacedBy(Spacing.md),
             verticalAlignment = Alignment.CenterVertically
         ) {
             AthleteAvatar(
                 avatarUrl = athlete.avatarUrl,
                 initials = athlete.displayName.take(2).uppercase()
             )
-            Column(verticalArrangement = Arrangement.spacedBy(2.dp)) {
+            Column(verticalArrangement = Arrangement.spacedBy(Spacing.xxs)) {
                 Text(
                     text = athlete.displayName,
                     style = MaterialTheme.typography.bodyLarge,
@@ -224,12 +229,12 @@ private fun AthleteRow(
 
         Button(
             onClick = onToggleFollow,
-            shape = RoundedCornerShape(999.dp),
+            shape = RoundedCornerShape(Spacing.d999),
             colors = ButtonDefaults.buttonColors(
                 containerColor = if (athlete.isFollowing) {
                     MaterialTheme.colorScheme.primaryContainer
                 } else {
-                    Color(0xFF252830)
+                    StrideColors.SurfaceAlt
                 },
                 contentColor = if (athlete.isFollowing) Color.White else MaterialTheme.colorScheme.onBackground
             )
@@ -246,7 +251,7 @@ private fun AthleteAvatar(
 ) {
     Box(
         modifier = Modifier
-            .size(48.dp)
+            .size(Spacing.d48)
             .clip(CircleShape)
             .background(MaterialTheme.colorScheme.surfaceVariant),
         contentAlignment = Alignment.Center
@@ -275,9 +280,9 @@ private fun EmptyExploreState(
     Column(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(vertical = 48.dp),
+            .padding(vertical = Spacing.d48),
         horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.spacedBy(8.dp)
+        verticalArrangement = Arrangement.spacedBy(Spacing.sm)
     ) {
         Text(
             text = message,

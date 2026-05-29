@@ -1,5 +1,7 @@
 package io.jadu.strideSync.ui.screens.detail
 
+import io.jadu.strideSync.ui.theme.Spacing
+
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
@@ -53,6 +55,7 @@ import io.jadu.strideSync.domain.model.Comment
 import io.jadu.strideSync.map.PlatformMapView
 import io.jadu.strideSync.ui.components.SportTypeIcon
 import io.jadu.strideSync.ui.components.StrideIconButton
+import io.jadu.strideSync.ui.theme.StrideColors
 import io.jadu.strideSync.ui.viewmodel.ActivityDetailViewModel
 import io.jadu.strideSync.utils.Formatters
 import io.jadu.strideSync.utils.PolylineDecoder
@@ -72,7 +75,6 @@ fun ActivityDetailScreen(
 
     ActivityDetailContent(
         uiState = uiState,
-        activityId = activityId,
         onBack = onBack,
         onToggleKudos = { viewModel.toggleKudos(activityId) },
         onCommentTextChange = { viewModel.onCommentTextChange(it) },
@@ -83,7 +85,6 @@ fun ActivityDetailScreen(
 @Composable
 private fun ActivityDetailContent(
     uiState: ActivityDetailViewModel.ActivityDetailUiState,
-    activityId: String,
     onBack: () -> Unit,
     onToggleKudos: () -> Unit,
     onCommentTextChange: (String) -> Unit,
@@ -94,7 +95,7 @@ private fun ActivityDetailContent(
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .background(Color(0xFF111318))
+            .background(StrideColors.Background)
     ) {
         if (uiState.isLoading && activity == null) {
             Box(
@@ -113,7 +114,7 @@ private fun ActivityDetailContent(
                         text = uiState.errorMessage ?: "Activity not found",
                         color = MaterialTheme.colorScheme.error
                     )
-                    Spacer(modifier = Modifier.height(16.dp))
+                    Spacer(modifier = Modifier.height(Spacing.lg))
                     Button(onClick = onBack) {
                         Text("Go Back")
                     }
@@ -122,8 +123,8 @@ private fun ActivityDetailContent(
         } else {
             LazyColumn(
                 modifier = Modifier.fillMaxSize(),
-                contentPadding = PaddingValues(top = 104.dp, bottom = 120.dp),
-                verticalArrangement = Arrangement.spacedBy(16.dp)
+                contentPadding = PaddingValues(top = Spacing.d104, bottom = Spacing.d120),
+                verticalArrangement = Arrangement.spacedBy(Spacing.lg)
             ) {
                 item {
                     val gpsPoints = remember(activity.polyline) {
@@ -132,10 +133,10 @@ private fun ActivityDetailContent(
                     PlatformMapView(
                         gpsPoints = gpsPoints,
                         modifier = Modifier
-                            .padding(horizontal = 16.dp)
+                            .padding(horizontal = Spacing.lg)
                             .fillMaxWidth()
-                            .height(220.dp)
-                            .clip(RoundedCornerShape(12.dp))
+                            .height(Spacing.d220)
+                            .clip(RoundedCornerShape(Spacing.md))
                     )
                 }
 
@@ -150,10 +151,10 @@ private fun ActivityDetailContent(
                 item {
                     Text(
                         text = activity.title,
-                        color = Color(0xFFF0F0F0),
+                        color = StrideColors.TextPrimary,
                         fontSize = 24.sp,
                         fontWeight = FontWeight.Bold,
-                        modifier = Modifier.padding(horizontal = 16.dp)
+                        modifier = Modifier.padding(horizontal = Spacing.lg)
                     )
                 }
 
@@ -163,14 +164,14 @@ private fun ActivityDetailContent(
                         duration = Formatters.formatDuration(activity.durationSec),
                         pace = activity.avgPace?.let { Formatters.formatPace(it) } ?: "—",
                         elevation = "+${activity.elevationM.toInt()}",
-                        modifier = Modifier.padding(horizontal = 16.dp)
+                        modifier = Modifier.padding(horizontal = Spacing.lg)
                     )
                 }
 
                 item {
                     HorizontalDivider(
-                        modifier = Modifier.padding(horizontal = 16.dp),
-                        color = Color(0xFF252830)
+                        modifier = Modifier.padding(horizontal = Spacing.lg),
+                        color = StrideColors.SurfaceAlt
                     )
                 }
 
@@ -179,31 +180,31 @@ private fun ActivityDetailContent(
                         kudosCount = uiState.kudosCount,
                         hasKudosed = uiState.hasKudosed,
                         onToggleKudos = onToggleKudos,
-                        modifier = Modifier.padding(horizontal = 16.dp)
+                        modifier = Modifier.padding(horizontal = Spacing.lg)
                     )
                 }
 
                 item {
                     HorizontalDivider(
-                        modifier = Modifier.padding(horizontal = 16.dp),
-                        color = Color(0xFF252830)
+                        modifier = Modifier.padding(horizontal = Spacing.lg),
+                        color = StrideColors.SurfaceAlt
                     )
                 }
 
                 item {
                     Text(
                         text = "Comments",
-                        color = Color(0xFFF0F0F0),
+                        color = StrideColors.TextPrimary,
                         fontSize = 16.sp,
                         fontWeight = FontWeight.Bold,
-                        modifier = Modifier.padding(horizontal = 16.dp)
+                        modifier = Modifier.padding(horizontal = Spacing.lg)
                     )
                 }
 
                 items(uiState.comments) { comment ->
                     CommentCard(
                         comment = comment,
-                        modifier = Modifier.padding(horizontal = 16.dp)
+                        modifier = Modifier.padding(horizontal = Spacing.lg)
                     )
                 }
 
@@ -211,9 +212,9 @@ private fun ActivityDetailContent(
                     item {
                         Text(
                             text = "No comments yet. Be the first!",
-                            color = Color(0xFF9BA3B2),
+                            color = StrideColors.TextSecondary,
                             fontSize = 14.sp,
-                            modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp)
+                            modifier = Modifier.padding(horizontal = Spacing.lg, vertical = Spacing.sm)
                         )
                     }
                 }
@@ -230,7 +231,7 @@ private fun ActivityDetailContent(
                     .fillMaxWidth()
                     .navigationBarsPadding()
                     .imePadding()
-                    .background(Color(0xF2111318))
+                    .background(StrideColors.Background.copy(alpha = 0.95f))
             )
         }
     }
@@ -241,10 +242,10 @@ private fun ActivityTopBar(onBack: () -> Unit) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .background(Color(0xE6111318))
+            .background(StrideColors.Background.copy(alpha = 0.9f))
             .statusBarsPadding()
-            .height(64.dp)
-            .padding(horizontal = 4.dp),
+            .height(Spacing.d64)
+            .padding(horizontal = Spacing.xs),
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically
     ) {
@@ -255,11 +256,11 @@ private fun ActivityTopBar(onBack: () -> Unit) {
         )
         Text(
             text = "Activity",
-            color = Color(0xFFF0F0F0),
+            color = StrideColors.TextPrimary,
             fontSize = 20.sp,
             fontWeight = FontWeight.Bold
         )
-        Spacer(modifier = Modifier.width(40.dp))
+        Spacer(modifier = Modifier.width(Spacing.d40))
     }
 }
 
@@ -272,15 +273,15 @@ private fun AthleteInfoRow(
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(horizontal = 16.dp),
+            .padding(horizontal = Spacing.lg),
         verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.spacedBy(12.dp)
+        horizontalArrangement = Arrangement.spacedBy(Spacing.md)
     ) {
         Box(
             modifier = Modifier
-                .size(48.dp)
-                .background(Color(0xFF382620), CircleShape)
-                .border(2.dp, Color(0xFF252830), CircleShape),
+                .size(Spacing.d48)
+                .background(StrideColors.SurfaceWarm, CircleShape)
+                .border(Spacing.xxs, StrideColors.SurfaceAlt, CircleShape),
             contentAlignment = Alignment.Center
         ) {
             Text(
@@ -293,13 +294,13 @@ private fun AthleteInfoRow(
         Column(modifier = Modifier.weight(1f)) {
             Text(
                 text = displayName,
-                color = Color(0xFFF0F0F0),
+                color = StrideColors.TextPrimary,
                 fontSize = 16.sp,
                 fontWeight = FontWeight.Bold
             )
             Text(
                 text = timeAgo,
-                color = Color(0xFF9BA3B2),
+                color = StrideColors.TextSecondary,
                 fontSize = 14.sp
             )
         }
@@ -318,17 +319,17 @@ private fun ActivityStatsGrid(
     elevation: String,
     modifier: Modifier = Modifier
 ) {
-    Column(modifier = modifier, verticalArrangement = Arrangement.spacedBy(8.dp)) {
+    Column(modifier = modifier, verticalArrangement = Arrangement.spacedBy(Spacing.sm)) {
         Row(
             modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.spacedBy(8.dp)
+            horizontalArrangement = Arrangement.spacedBy(Spacing.sm)
         ) {
             StatCell(modifier = Modifier.weight(1f), value = distanceKm, unit = "km", label = "Distance", valueFontSize = 32)
             StatCell(modifier = Modifier.weight(1f), value = pace, unit = "/km", label = "Avg Pace", valueFontSize = 32)
         }
         Row(
             modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.spacedBy(8.dp)
+            horizontalArrangement = Arrangement.spacedBy(Spacing.sm)
         ) {
             StatCell(modifier = Modifier.weight(1f), value = duration, unit = null, label = "Moving Time", valueFontSize = 24)
             StatCell(modifier = Modifier.weight(1f), value = elevation, unit = "m", label = "Elevation", valueFontSize = 24)
@@ -346,33 +347,33 @@ private fun StatCell(
 ) {
     Box(
         modifier = modifier
-            .background(Color(0xFF1F0F0B), RoundedCornerShape(12.dp))
-            .padding(16.dp)
+            .background(StrideColors.Surface, RoundedCornerShape(Spacing.md))
+            .padding(Spacing.lg)
     ) {
         Column {
             Row(verticalAlignment = Alignment.Bottom) {
                 Text(
                     text = value,
-                    color = Color(0xFFF0F0F0),
+                    color = StrideColors.TextPrimary,
                     fontSize = valueFontSize.sp,
                     fontWeight = FontWeight.ExtraBold,
                     letterSpacing = (-0.5).sp
                 )
                 if (unit != null) {
-                    Spacer(modifier = Modifier.width(4.dp))
+                    Spacer(modifier = Modifier.width(Spacing.xs))
                     Text(
                         text = unit,
-                        color = Color(0xFF9BA3B2),
+                        color = StrideColors.TextSecondary,
                         fontSize = 16.sp,
                         fontWeight = FontWeight.Bold,
-                        modifier = Modifier.padding(bottom = 2.dp)
+                        modifier = Modifier.padding(bottom = Spacing.xxs)
                     )
                 }
             }
-            Spacer(modifier = Modifier.height(4.dp))
+            Spacer(modifier = Modifier.height(Spacing.xs))
             Text(
                 text = label.uppercase(),
-                color = Color(0xFF9BA3B2),
+                color = StrideColors.TextSecondary,
                 fontSize = 10.sp,
                 fontWeight = FontWeight.SemiBold,
                 letterSpacing = 1.sp
@@ -395,7 +396,7 @@ private fun KudosRow(
     ) {
         Text(
             text = "$kudosCount kudos",
-            color = Color(0xFF9BA3B2),
+            color = StrideColors.TextSecondary,
             fontSize = 14.sp
         )
 
@@ -403,25 +404,25 @@ private fun KudosRow(
             onClick = onToggleKudos,
             shape = CircleShape,
             colors = ButtonDefaults.buttonColors(
-                containerColor = if (hasKudosed) Color(0xFFFC4C02) else MaterialTheme.colorScheme.primaryContainer,
+                containerColor = if (hasKudosed) StrideColors.BrandPrimaryStrong else MaterialTheme.colorScheme.primaryContainer,
                 contentColor = if (hasKudosed) Color.White else MaterialTheme.colorScheme.onPrimaryContainer
             ),
-            contentPadding = PaddingValues(horizontal = 20.dp, vertical = 0.dp),
+            contentPadding = PaddingValues(horizontal = Spacing.xl, vertical = Spacing.d0),
             modifier = Modifier
-                .height(44.dp)
+                .height(Spacing.d44)
                 .shadow(
-                    elevation = 8.dp,
+                    elevation = Spacing.sm,
                     shape = CircleShape,
-                    ambientColor = Color(0x66FF571B),
-                    spotColor = Color(0x66FF571B)
+                    ambientColor = StrideColors.BrandPrimarySoft,
+                    spotColor = StrideColors.BrandPrimarySoft
                 )
         ) {
             Icon(
                 imageVector = Icons.Default.ThumbUp,
                 contentDescription = null,
-                modifier = Modifier.size(18.dp)
+                modifier = Modifier.size(Spacing.d18)
             )
-            Spacer(modifier = Modifier.width(8.dp))
+            Spacer(modifier = Modifier.width(Spacing.sm))
             Text(
                 text = if (hasKudosed) "Kudos Given" else "Give Kudos",
                 fontSize = 12.sp,
@@ -440,14 +441,14 @@ private fun CommentCard(
     Row(
         modifier = modifier
             .fillMaxWidth()
-            .background(Color(0xFF1F0F0B), RoundedCornerShape(12.dp))
-            .padding(16.dp),
-        horizontalArrangement = Arrangement.spacedBy(12.dp)
+            .background(StrideColors.Surface, RoundedCornerShape(Spacing.md))
+            .padding(Spacing.lg),
+        horizontalArrangement = Arrangement.spacedBy(Spacing.md)
     ) {
         Box(
             modifier = Modifier
-                .size(40.dp)
-                .background(Color(0xFF382620), CircleShape),
+                .size(Spacing.d40)
+                .background(StrideColors.SurfaceWarm, CircleShape),
             contentAlignment = Alignment.Center
         ) {
             Text(
@@ -460,24 +461,24 @@ private fun CommentCard(
         Column {
             Row(
                 verticalAlignment = Alignment.Bottom,
-                horizontalArrangement = Arrangement.spacedBy(8.dp)
+                horizontalArrangement = Arrangement.spacedBy(Spacing.sm)
             ) {
                 Text(
                     text = comment.displayName,
-                    color = Color(0xFFF0F0F0),
+                    color = StrideColors.TextPrimary,
                     fontSize = 12.sp,
                     fontWeight = FontWeight.SemiBold
                 )
                 Text(
                     text = Formatters.timeAgo(comment.createdAt),
-                    color = Color(0xFF9BA3B2),
+                    color = StrideColors.TextSecondary,
                     fontSize = 10.sp
                 )
             }
-            Spacer(modifier = Modifier.height(4.dp))
+            Spacer(modifier = Modifier.height(Spacing.xs))
             Text(
                 text = comment.text,
-                color = Color(0xFF9BA3B2),
+                color = StrideColors.TextSecondary,
                 fontSize = 14.sp,
                 lineHeight = 20.sp
             )
@@ -492,33 +493,33 @@ private fun CommentInputBar(
     onSend: () -> Unit,
     modifier: Modifier = Modifier
 ) {
-    Box(modifier = modifier.padding(horizontal = 16.dp, vertical = 12.dp)) {
+    Box(modifier = modifier.padding(horizontal = Spacing.lg, vertical = Spacing.md)) {
         Box(
             modifier = Modifier
                 .fillMaxWidth()
-                .height(48.dp)
-                .background(Color(0xFF252830), CircleShape)
+                .height(Spacing.d48)
+                .background(StrideColors.SurfaceAlt, CircleShape)
         ) {
             BasicTextField(
                 value = value,
                 onValueChange = onValueChange,
                 singleLine = true,
                 textStyle = TextStyle(
-                    color = Color(0xFFF0F0F0),
+                    color = StrideColors.TextPrimary,
                     fontSize = 14.sp
                 ),
                 decorationBox = { innerTextField ->
                     Row(
                         modifier = Modifier
                             .fillMaxSize()
-                            .padding(start = 16.dp, end = 52.dp),
+                            .padding(start = Spacing.lg, end = Spacing.d52),
                         verticalAlignment = Alignment.CenterVertically
                     ) {
                         Box(modifier = Modifier.weight(1f)) {
                             if (value.isEmpty()) {
                                 Text(
                                     text = "Add a comment...",
-                                    color = Color(0xFF9BA3B2),
+                                    color = StrideColors.TextSecondary,
                                     fontSize = 14.sp
                                 )
                             }
@@ -534,7 +535,7 @@ private fun CommentInputBar(
                 isFavoriteActive = value.isNotEmpty(),
                 modifier = Modifier
                     .align(Alignment.CenterEnd)
-                    .padding(end = 4.dp)
+                    .padding(end = Spacing.xs)
             )
         }
     }

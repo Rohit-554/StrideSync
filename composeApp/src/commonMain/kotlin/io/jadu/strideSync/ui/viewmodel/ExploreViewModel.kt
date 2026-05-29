@@ -15,6 +15,11 @@ import kotlinx.coroutines.launch
 class ExploreViewModel(
     private val socialRepository: SocialRepository
 ) : ViewModel() {
+    companion object {
+        private const val SEARCH_QUERY_MIN_LENGTH = 2
+        private const val SEARCH_DEBOUNCE_MS = 250L
+        private const val SUGGESTION_LIMIT = 8
+    }
 
     data class ExploreUiState(
         val query: String = "",
@@ -41,21 +46,22 @@ class ExploreViewModel(
         _uiState.value = _uiState.value.copy(query = query, errorMessage = null)
         searchJob?.cancel()
 
-        if (query.trim().length < 2) {
+        val normalizedQuery = query.trim()
+        if (normalizedQuery.length < SEARCH_QUERY_MIN_LENGTH) {
             _uiState.value = _uiState.value.copy(searchResults = emptyList(), isSearching = false)
             return
         }
 
         searchJob = viewModelScope.launch {
-            delay(250)
-            searchAthletes(query.trim())
+            delay(SEARCH_DEBOUNCE_MS)
+            searchAthletes(normalizedQuery)
         }
     }
 
     fun loadSuggestions() {
         _uiState.value = _uiState.value.copy(isLoading = true, errorMessage = null)
         viewModelScope.launch {
-            socialRepository.getSuggestedAthletes(limit = 8)
+            socialRepository.getSuggestedAthletes(limit = SUGGESTION_LIMIT)
                 .onSuccess { athletes ->
                     _uiState.value = _uiState.value.copy(
                         suggestedAthletes = athletes,
@@ -73,7 +79,7 @@ class ExploreViewModel(
 
     fun toggleFollow(athleteId: String) {
         val current = _uiState.value
-        val athlete = (current.searchResults + current.suggestedAthletes).firstOrNull { it.id == athleteId } ?: return
+        val athlete = findAthlete(athleteId, current) ?: return
         val updatedFollowState = !athlete.isFollowing
         updateAthlete(athleteId, updatedFollowState)
 
@@ -89,6 +95,9 @@ class ExploreViewModel(
             }
         }
     }
+
+    private fun findAthlete(athleteId: String, state: ExploreUiState): AthleteSummary? =
+        (state.searchResults + state.suggestedAthletes).firstOrNull { it.id == athleteId }
 
     private fun searchAthletes(query: String) {
         _uiState.value = _uiState.value.copy(isSearching = true, errorMessage = null)

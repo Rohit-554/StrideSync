@@ -36,7 +36,11 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import io.jadu.strideSync.ui.components.StridePrimaryButton
+import io.jadu.strideSync.ui.theme.Spacing
+import io.jadu.strideSync.ui.theme.StrideColors
 import kotlinx.coroutines.delay
+
+private const val SPLASH_GRID_LINE = 0x08FFFFFF
 
 @Composable
 fun SplashScreen(
@@ -55,61 +59,23 @@ fun SplashScreen(
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .background(Color(0xFF111318))
+            .background(StrideColors.Background)
     ) {
-        // Subtle grid texture overlay
-        Canvas(modifier = Modifier.fillMaxSize()) {
-            val gridStep = 50.dp.toPx()
-            val lineColor = Color(0x08FFFFFF)
-            val strokePx = 1.dp.toPx()
-            val cols = (size.width / gridStep).toInt() + 1
-            val rows = (size.height / gridStep).toInt() + 1
-            for (i in 0..cols) {
-                drawLine(
-                    color = lineColor,
-                    start = Offset(i * gridStep, 0f),
-                    end = Offset(i * gridStep, size.height),
-                    strokeWidth = strokePx
-                )
-            }
-            for (i in 0..rows) {
-                drawLine(
-                    color = lineColor,
-                    start = Offset(0f, i * gridStep),
-                    end = Offset(size.width, i * gridStep),
-                    strokeWidth = strokePx
-                )
-            }
-        }
-
-        // Orange radial glow rising from below the bottom edge
-        Canvas(modifier = Modifier.fillMaxSize()) {
-            drawRect(
-                brush = Brush.radialGradient(
-                    colors = listOf(
-                        Color(0x66FF571B), // 40% opacity orange
-                        Color(0x1AFF571B), // 10% opacity orange
-                        Color.Transparent
-                    ),
-                    center = Offset(size.width / 2f, size.height * 1.2f),
-                    radius = size.width * 1.5f
-                )
-            )
-        }
+        SplashGridOverlay()
+        SplashGlowOverlay()
 
         Column(
             modifier = Modifier
                 .fillMaxSize()
                 .statusBarsPadding()
-                .padding(horizontal = 16.dp),
+                .padding(horizontal = Spacing.lg),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            // Hero block — vertically centered with top padding
             Box(
                 modifier = Modifier
                     .weight(1f)
                     .fillMaxWidth()
-                    .padding(top = 80.dp),
+                    .padding(top = Spacing.d80),
                 contentAlignment = Alignment.Center
             ) {
                 androidx.compose.animation.AnimatedVisibility(
@@ -124,9 +90,9 @@ fun SplashScreen(
                             imageVector = Icons.Default.DirectionsRun,
                             contentDescription = null,
                             tint = MaterialTheme.colorScheme.primary,
-                            modifier = Modifier.size(48.dp)
+                            modifier = Modifier.size(Spacing.d48)
                         )
-                        Spacer(modifier = Modifier.height(16.dp))
+                        Spacer(modifier = Modifier.height(Spacing.lg))
                         Text(
                             text = "StrideSync",
                             color = Color.White,
@@ -135,10 +101,10 @@ fun SplashScreen(
                             letterSpacing = (-0.5).sp,
                             textAlign = TextAlign.Center
                         )
-                        Spacer(modifier = Modifier.height(8.dp))
+                        Spacer(modifier = Modifier.height(Spacing.sm))
                         Text(
                             text = "Every stride counts.",
-                            color = Color(0xFF9BA3B2),
+                            color = StrideColors.TextSecondary,
                             fontSize = 16.sp,
                             fontWeight = FontWeight.Normal,
                             textAlign = TextAlign.Center
@@ -147,7 +113,6 @@ fun SplashScreen(
                 }
             }
 
-            // Bottom CTA
             Box(modifier = Modifier.fillMaxWidth()) {
                 androidx.compose.animation.AnimatedVisibility(
                     visible = bottomVisible,
@@ -157,7 +122,7 @@ fun SplashScreen(
                     Box(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .padding(bottom = 48.dp)
+                            .padding(bottom = Spacing.xxxl + Spacing.lg)
                     ) {
                         StridePrimaryButton(
                             text = "Get Started",
@@ -167,5 +132,49 @@ fun SplashScreen(
                 }
             }
         }
+    }
+}
+
+@Composable
+private fun SplashGridOverlay() {
+    Canvas(modifier = Modifier.fillMaxSize()) {
+        val gridStep = Spacing.d50.toPx()
+        val lineColor = Color(SPLASH_GRID_LINE)
+        val strokePx = Spacing.d1.toPx()
+        val cols = (size.width / gridStep).toInt() + 1
+        val rows = (size.height / gridStep).toInt() + 1
+        for (i in 0..cols) {
+            drawLine(
+                color = lineColor,
+                start = Offset(i * gridStep, 0f),
+                end = Offset(i * gridStep, size.height),
+                strokeWidth = strokePx
+            )
+        }
+        for (i in 0..rows) {
+            drawLine(
+                color = lineColor,
+                start = Offset(0f, i * gridStep),
+                end = Offset(size.width, i * gridStep),
+                strokeWidth = strokePx
+            )
+        }
+    }
+}
+
+@Composable
+private fun SplashGlowOverlay() {
+    Canvas(modifier = Modifier.fillMaxSize()) {
+        drawRect(
+            brush = Brush.radialGradient(
+                colors = listOf(
+                    StrideColors.BrandPrimarySoft,
+                    StrideColors.BrandPrimaryOverlay,
+                    Color.Transparent
+                ),
+                center = Offset(size.width / 2f, size.height * 1.2f),
+                radius = size.width * 1.5f
+            )
+        )
     }
 }

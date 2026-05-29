@@ -1,5 +1,7 @@
 package io.jadu.strideSync.ui.screens.record
 
+import io.jadu.strideSync.ui.theme.Spacing
+
 import androidx.compose.animation.core.LinearEasing
 import androidx.compose.animation.core.RepeatMode
 import androidx.compose.animation.core.animateFloat
@@ -67,6 +69,7 @@ import io.jadu.strideSync.ui.components.GpsSignalIndicator
 import io.jadu.strideSync.ui.components.RecordButton
 import io.jadu.strideSync.ui.components.StrideChip
 import io.jadu.strideSync.ui.theme.Background
+import io.jadu.strideSync.ui.theme.StrideColors
 import io.jadu.strideSync.ui.viewmodel.RecordViewModel
 import kotlinx.coroutines.launch
 import org.koin.compose.viewmodel.koinViewModel
@@ -131,13 +134,11 @@ private fun RecordScreenContent(
             .background(Background)
             .windowInsetsPadding(WindowInsets.statusBars)
     ) {
-        // Top bar
         RecordTopBar(
             onNavigateBack = onNavigateBack,
             showBack = isIdle
         )
 
-        // Sport selector (only when idle)
         if (isIdle) {
             SportTypeSelector(
                 selectedSport = uiState.selectedSport,
@@ -146,23 +147,22 @@ private fun RecordScreenContent(
             PermissionMessage(
                 status = locationPermission,
                 onOpenSettings = onOpenPermissionSettings,
-                modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp)
+                modifier = Modifier.padding(horizontal = Spacing.lg, vertical = Spacing.sm)
             )
         }
 
-        // GPS indicator (when recording or paused)
         if (!isIdle) {
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(horizontal = 16.dp, vertical = 8.dp),
+                    .padding(horizontal = Spacing.lg, vertical = Spacing.sm),
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 GpsSignalIndicator(quality = uiState.gpsSignalQuality)
                 Text(
                     text = if (isPaused) "PAUSED" else "RECORDING",
-                    color = if (isPaused) Color(0xFFFFC107) else Color(0xFFFF571B),
+                    color = if (isPaused) StrideColors.Warning else StrideColors.BrandPrimary,
                     fontSize = 12.sp,
                     fontWeight = FontWeight.Bold,
                     letterSpacing = 1.sp
@@ -178,17 +178,15 @@ private fun RecordScreenContent(
             isRecording = !isIdle
         )
 
-        // Live stats (visible when recording or paused)
         if (!isIdle) {
             LiveStatsSection(
                 distanceKm = uiState.distanceKm,
                 duration = uiState.duration,
                 pace = uiState.pace,
-                modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp)
+                modifier = Modifier.padding(horizontal = Spacing.lg, vertical = Spacing.sm)
             )
         }
 
-        // Bottom controls
         BottomControls(
             state = uiState.state,
             onStart = onStartRecording,
@@ -198,7 +196,7 @@ private fun RecordScreenContent(
             modifier = Modifier
                 .fillMaxWidth()
                 .windowInsetsPadding(WindowInsets.navigationBars)
-                .padding(horizontal = 24.dp, vertical = 16.dp)
+                .padding(horizontal = Spacing.xxl, vertical = Spacing.lg)
         )
     }
 }
@@ -211,7 +209,7 @@ private fun RecordTopBar(
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(horizontal = 4.dp, vertical = 8.dp),
+            .padding(horizontal = Spacing.xs, vertical = Spacing.sm),
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically
     ) {
@@ -224,7 +222,7 @@ private fun RecordTopBar(
                 )
             }
         } else {
-            Spacer(modifier = Modifier.size(48.dp))
+            Spacer(modifier = Modifier.size(Spacing.d48))
         }
         Text(
             text = "Record",
@@ -237,7 +235,7 @@ private fun RecordTopBar(
             Icon(
                 imageVector = Icons.Default.Settings,
                 contentDescription = "Settings",
-                tint = Color(0xFF9BA3B2)
+                tint = StrideColors.TextSecondary
             )
         }
     }
@@ -258,8 +256,8 @@ private fun SportTypeSelector(
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(horizontal = 16.dp, vertical = 8.dp),
-        horizontalArrangement = Arrangement.spacedBy(8.dp)
+            .padding(horizontal = Spacing.lg, vertical = Spacing.sm),
+        horizontalArrangement = Arrangement.spacedBy(Spacing.sm)
     ) {
         sports.forEach { (sport, icon) ->
             StrideChip(
@@ -281,13 +279,13 @@ private fun PermissionMessage(
     when (status) {
         PermissionStatus.DENIED -> Text(
             text = "Location permission is required to record an outdoor activity.",
-            color = Color(0xFFFFC107),
+            color = StrideColors.Warning,
             fontSize = 13.sp,
             modifier = modifier
         )
         PermissionStatus.DENIED_ALWAYS -> Button(
             onClick = onOpenSettings,
-            colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF252830)),
+            colors = ButtonDefaults.buttonColors(containerColor = StrideColors.SurfaceAlt),
             modifier = modifier
         ) {
             Text("Enable Location", color = Color.White)
@@ -306,8 +304,8 @@ private fun RecordMap(
 
     Box(
         modifier = modifier
-            .padding(horizontal = 16.dp, vertical = 8.dp)
-            .clip(RoundedCornerShape(20.dp))
+            .padding(horizontal = Spacing.lg, vertical = Spacing.sm)
+            .clip(RoundedCornerShape(Spacing.xl))
     ) {
         PlatformMapView(
             gpsPoints = gpsPoints,
@@ -339,8 +337,8 @@ private fun MapLoadingShimmer(modifier: Modifier = Modifier) {
         label = "mapShimmerProgress"
     )
 
-    val base = Color(0xFF252830)
-    val highlight = Color(0xFF3A3F4B)
+    val base = StrideColors.SurfaceAlt
+    val highlight = StrideColors.SurfaceAlt.copy(alpha = 0.7f)
     val sweep = progress * 2000f
 
     Box(
@@ -357,7 +355,7 @@ private fun MapLoadingShimmer(modifier: Modifier = Modifier) {
     ) {
         Text(
             text = "Locating you…",
-            color = Color(0xFF9BA3B2),
+            color = StrideColors.TextSecondary,
             fontSize = 14.sp
         )
     }
@@ -369,16 +367,16 @@ private fun EmptyMapOverlay(
     modifier: Modifier = Modifier
 ) {
     Box(
-        modifier = modifier.background(Color(0xFF111318).copy(alpha = 0.18f))
+        modifier = modifier.background(StrideColors.Background.copy(alpha = 0.18f))
     ) {
         Text(
             text = if (isRecording) "Waiting for GPS..." else "GPS route will appear here",
-            color = Color(0xFF9BA3B2),
+            color = StrideColors.TextSecondary,
             fontSize = 14.sp,
             modifier = Modifier
                 .align(Alignment.Center)
-                .background(Color(0xCC111318), RoundedCornerShape(999.dp))
-                .padding(horizontal = 14.dp, vertical = 8.dp)
+                .background(StrideColors.Background.copy(alpha = 0.8f), RoundedCornerShape(Spacing.d999))
+                .padding(horizontal = Spacing.d14, vertical = Spacing.sm)
         )
     }
 }
@@ -393,8 +391,8 @@ private fun LiveStatsSection(
     Row(
         modifier = modifier
             .fillMaxWidth()
-            .background(Color(0xFF1F0F0B), RoundedCornerShape(16.dp))
-            .padding(20.dp),
+            .background(StrideColors.Surface, RoundedCornerShape(Spacing.lg))
+            .padding(Spacing.xl),
         horizontalArrangement = Arrangement.SpaceEvenly
     ) {
         LiveStatItem(value = distanceKm, label = "KM")
@@ -410,13 +408,13 @@ private fun LiveStatItem(value: String, label: String) {
     Column(horizontalAlignment = Alignment.CenterHorizontally) {
         Text(
             text = value,
-            color = Color(0xFFF0F0F0),
+            color = StrideColors.TextPrimary,
             fontSize = 24.sp,
             fontWeight = FontWeight.ExtraBold
         )
         Text(
             text = label,
-            color = Color(0xFF9BA3B2),
+            color = StrideColors.TextSecondary,
             fontSize = 10.sp,
             fontWeight = FontWeight.Bold,
             letterSpacing = 1.sp
@@ -428,8 +426,8 @@ private fun LiveStatItem(value: String, label: String) {
 private fun StatDivider() {
     Box(
         modifier = Modifier
-            .size(width = 1.dp, height = 36.dp)
-            .background(Color(0xFF2C1B16))
+            .size(width = Spacing.d1, height = Spacing.d36)
+            .background(StrideColors.SurfaceOutline)
     )
 }
 
@@ -447,10 +445,9 @@ private fun BottomControls(
     Column(
         modifier = modifier,
         horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.spacedBy(16.dp)
+        verticalArrangement = Arrangement.spacedBy(Spacing.lg)
     ) {
         if (isIdle) {
-            // Idle state: just the big start button
             RecordButton(
                 state = state,
                 onStart = onStart,
@@ -458,32 +455,30 @@ private fun BottomControls(
             )
             Text(
                 text = "Tap to start recording",
-                color = Color(0xFF9BA3B2),
+                color = StrideColors.TextSecondary,
                 fontSize = 13.sp,
                 fontWeight = FontWeight.Normal
             )
         } else {
-            // Recording or paused: record button + pause/resume
             Row(
                 modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.spacedBy(16.dp, Alignment.CenterHorizontally),
+                horizontalArrangement = Arrangement.spacedBy(Spacing.lg, Alignment.CenterHorizontally),
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                // Pause/Resume button
                 if (state == TrackingEngine.RecordingState.Recording) {
                     Button(
                         onClick = onPause,
                         shape = CircleShape,
                         colors = ButtonDefaults.buttonColors(
-                            containerColor = Color(0xFF252830),
-                            contentColor = Color(0xFFF0F0F0)
+                            containerColor = StrideColors.SurfaceAlt,
+                            contentColor = StrideColors.TextPrimary
                         ),
-                        modifier = Modifier.size(64.dp)
+                        modifier = Modifier.size(Spacing.d64)
                     ) {
                         Icon(
                             imageVector = Icons.Default.Pause,
                             contentDescription = "Pause",
-                            modifier = Modifier.size(28.dp)
+                            modifier = Modifier.size(Spacing.d28)
                         )
                     }
                 } else {
@@ -491,20 +486,19 @@ private fun BottomControls(
                         onClick = onResume,
                         shape = CircleShape,
                         colors = ButtonDefaults.buttonColors(
-                            containerColor = Color(0xFF252830),
-                            contentColor = Color(0xFFF0F0F0)
+                            containerColor = StrideColors.SurfaceAlt,
+                            contentColor = StrideColors.TextPrimary
                         ),
-                        modifier = Modifier.size(64.dp)
+                        modifier = Modifier.size(Spacing.d64)
                     ) {
                         Icon(
                             imageVector = Icons.AutoMirrored.Filled.DirectionsRun,
                             contentDescription = "Resume",
-                            modifier = Modifier.size(28.dp)
+                            modifier = Modifier.size(Spacing.d28)
                         )
                     }
                 }
 
-                // Main record button (acts as stop when recording)
                 RecordButton(
                     state = state,
                     onStart = onStart,

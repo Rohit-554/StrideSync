@@ -60,7 +60,6 @@ class TrackingEngine(
 
         val wasPaused = _trackingData.value.state == RecordingState.Paused
         if (!wasPaused) {
-            // Fresh start
             bufferedPoints.clear()
             lastGpsPoint = null
             elapsedBeforePause = 0L

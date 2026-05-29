@@ -21,6 +21,9 @@ class RecordViewModel(
     private val activityRepository: ActivityRepository,
     private val trackingServiceController: TrackingServiceController
 ) : ViewModel() {
+    companion object {
+        private const val EMPTY_PACE_TEXT = "—"
+    }
 
     data class RecordUiState(
         val state: TrackingEngine.RecordingState = TrackingEngine.RecordingState.Idle,
@@ -55,7 +58,7 @@ class RecordViewModel(
                     state = data.state,
                     distanceKm = Formatters.metersToKmString(data.distanceMeters),
                     duration = Formatters.formatDuration(data.elapsedSeconds),
-                    pace = data.paceSecondsPerKm?.let { Formatters.formatPace(it) } ?: "—",
+                    pace = data.paceSecondsPerKm?.let { Formatters.formatPace(it) } ?: EMPTY_PACE_TEXT,
                     gpsPoints = data.gpsPoints,
                     gpsSignalQuality = data.gpsSignalQuality
                 )
@@ -91,14 +94,12 @@ class RecordViewModel(
         preserveCompletedStats = true
         collectedGpsPoints = trackingEngine.stopAndSave()
         trackingServiceController.stop()
-        if (completedDistanceMeters <= 0.0 && collectedGpsPoints.size > 1) {
-            completedDistanceMeters = DistanceCalculator.cumulativeDistanceMeters(collectedGpsPoints)
-        }
+        completedDistanceMeters = resolveCompletedDistance(completedDistanceMeters, collectedGpsPoints)
         _uiState.value = _uiState.value.copy(
             state = TrackingEngine.RecordingState.Idle,
             distanceKm = Formatters.metersToKmString(completedDistanceMeters),
             duration = Formatters.formatDuration(completedDurationSeconds),
-            pace = completedPaceSecondsPerKm?.let { Formatters.formatPace(it) } ?: "—",
+            pace = completedPaceSecondsPerKm?.let { Formatters.formatPace(it) } ?: EMPTY_PACE_TEXT,
             gpsPoints = collectedGpsPoints
         )
     }
@@ -112,31 +113,11 @@ class RecordViewModel(
             try {
                 _uiState.value = _uiState.value.copy(isSaving = true, errorMessage = null)
 
-                val currentState = _uiState.value
-                val distanceM = completedDistanceMeters
-                val durationSec = completedDurationSeconds
-
-                val activity = Activity(
-                    id = "local-${kotlin.time.Clock.System.now().toEpochMilliseconds()}",
-                    userId = "",
-                    sportType = currentState.selectedSport,
-                    title = title,
-                    distanceM = distanceM,
-                    durationSec = durationSec,
-                    elevationM = 0.0,
-                    avgPace = completedPaceSecondsPerKm,
-                    polyline = "",
-                    startedAt = kotlin.time.Clock.System.now().toEpochMilliseconds() - (durationSec * 1000),
-                    createdAt = kotlin.time.Clock.System.now().toEpochMilliseconds()
-                )
+                val activity = createPendingActivity(title)
 
                 activityRepository.createActivity(activity, collectedGpsPoints)
                     .onSuccess {
-                        preserveCompletedStats = false
-                        collectedGpsPoints = emptyList()
-                        completedDistanceMeters = 0.0
-                        completedDurationSeconds = 0L
-                        completedPaceSecondsPerKm = null
+                        clearCompletedActivityState()
                         _uiState.value = _uiState.value.copy(isSaving = false, saveComplete = true)
                     }
                     .onFailure { error ->
@@ -155,11 +136,7 @@ class RecordViewModel(
         trackingEngine.stopAndSave()
         trackingServiceController.stop()
         _uiState.value = RecordUiState()
-        collectedGpsPoints = emptyList()
-        completedDistanceMeters = 0.0
-        completedDurationSeconds = 0L
-        completedPaceSecondsPerKm = null
-        preserveCompletedStats = false
+        clearCompletedActivityState()
     }
 
     fun resetSaveState() {
@@ -167,4 +144,36 @@ class RecordViewModel(
         saveJobInFlight = false
     }
 
+    private fun resolveCompletedDistance(
+        completedDistanceMeters: Double,
+        gpsPoints: List<GpsPoint>
+    ): Double {
+        if (completedDistanceMeters > 0.0 || gpsPoints.size <= 1) return completedDistanceMeters
+        return DistanceCalculator.cumulativeDistanceMeters(gpsPoints)
+    }
+
+    private fun createPendingActivity(title: String): Activity {
+        val now = kotlin.time.Clock.System.now().toEpochMilliseconds()
+        return Activity(
+            id = "local-$now",
+            userId = "",
+            sportType = _uiState.value.selectedSport,
+            title = title,
+            distanceM = completedDistanceMeters,
+            durationSec = completedDurationSeconds,
+            elevationM = 0.0,
+            avgPace = completedPaceSecondsPerKm,
+            polyline = "",
+            startedAt = now - (completedDurationSeconds * 1000),
+            createdAt = now
+        )
+    }
+
+    private fun clearCompletedActivityState() {
+        preserveCompletedStats = false
+        collectedGpsPoints = emptyList()
+        completedDistanceMeters = 0.0
+        completedDurationSeconds = 0L
+        completedPaceSecondsPerKm = null
+    }
 }

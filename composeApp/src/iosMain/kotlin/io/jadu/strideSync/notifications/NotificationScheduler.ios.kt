@@ -32,11 +32,7 @@ actual class NotificationScheduler {
             content = content,
             trigger = trigger,
         )
-        center.addNotificationRequest(request) { error ->
-            if (error != null) {
-                println("NotificationScheduler: failed to schedule — ${error.localizedDescription}")
-            }
-        }
+        center.addNotificationRequest(request, withCompletionHandler = null)
     }
 
     actual fun cancel(id: String) {
