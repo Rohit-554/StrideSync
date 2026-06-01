@@ -1,3 +1,5 @@
+import com.codingfeline.buildkonfig.compiler.FieldSpec.Type.STRING
+import java.util.Properties
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
 plugins {
@@ -7,6 +9,21 @@ plugins {
     alias(libs.plugins.composeCompiler)
     alias(libs.plugins.ksp)
     alias(libs.plugins.kotlinSerialization)
+    alias(libs.plugins.buildkonfig)
+}
+
+// Backend URL is kept out of source control. Set BASE_URL in local.properties
+// (git-ignored). Fresh clones fall back to the Android emulator loopback address.
+val backendBaseUrl: String = Properties().apply {
+    val file = rootProject.file("local.properties")
+    if (file.exists()) file.inputStream().use { load(it) }
+}.getProperty("BASE_URL") ?: "http://10.0.2.2:8080"
+
+buildkonfig {
+    packageName = "io.jadu.strideSync"
+    defaultConfigs {
+        buildConfigField(STRING, "BASE_URL", backendBaseUrl)
+    }
 }
 
 kotlin {

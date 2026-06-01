@@ -1,5 +1,6 @@
 [versions]
 agp = "9.1.1"
+buildkonfig = "0.17.1"
 exposed = "0.61.0"
 postgresql = "42.7.4"
 bcrypt = "0.10.2"
@@ -182,3 +183,4 @@ kotlinMultiplatform = { id = "org.jetbrains.kotlin.multiplatform", version.ref =
 ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
 room = { id = "androidx.room3", version.ref = "room3" }
 kotlinSerialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
+buildkonfig = { id = "com.codingfeline.buildkonfig", version.ref = "buildkonfig" }
