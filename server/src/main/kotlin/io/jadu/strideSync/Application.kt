@@ -1,5 +1,6 @@
 package io.jadu.strideSync
 
+import io.jadu.strideSync.config.EnvConfig
 import io.jadu.strideSync.db.DatabaseFactory
 import io.jadu.strideSync.plugins.configureAuthentication
 import io.jadu.strideSync.plugins.configureRouting
@@ -21,9 +22,13 @@ import io.ktor.server.netty.Netty
 import io.ktor.server.plugins.cors.routing.CORS
 
 fun main() {
-    embeddedServer(Netty, port = 8080, host = "0.0.0.0", module = Application::module)
+    embeddedServer(Netty, port = listenPort(), host = "0.0.0.0", module = Application::module)
         .start(wait = true)
 }
+
+private const val DEFAULT_PORT = 8080
+
+private fun listenPort(): Int = EnvConfig.get("PORT")?.toInt() ?: DEFAULT_PORT
 
 fun Application.module() {
     DatabaseFactory.init()
