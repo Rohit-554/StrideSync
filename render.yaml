@@ -1,0 +1,42 @@
+# Render Blueprint for the StrideSync Ktor backend.
+# Database is hosted separately on Neon (free serverless Postgres).
+#
+# Setup:
+#   1. Create a Neon project, copy its connection string.
+#   2. In Render: New > Blueprint > point at this repo.
+#   3. Fill the env vars marked `sync: false` in the Render dashboard
+#      (they are secrets and are never committed here).
+#
+# Docs: https://render.com/docs/blueprint-spec
+
+services:
+  - type: web
+    name: stridesync-server
+    runtime: docker
+    dockerfilePath: ./server/Dockerfile
+    dockerContext: .
+    plan: free
+    region: oregon
+    healthCheckPath: /health
+    envVars:
+      # Render injects PORT; the server reads it in Application.kt.
+      - key: PORT
+        value: 8080
+
+      # Neon Postgres — paste values from your Neon connection string.
+      # JDBC form, SSL is mandatory for Neon:
+      #   jdbc:postgresql://<host>/<db>?sslmode=require
+      - key: DB_URL
+        sync: false
+      - key: DB_USER
+        sync: false
+      - key: DB_PASSWORD
+        sync: false
+
+      # JWT — Render generates a strong random secret once and keeps it.
+      - key: JWT_SECRET
+        generateValue: true
+      - key: JWT_ISSUER
+        value: stridesync
+      - key: JWT_AUDIENCE
+        value: stridesync-users
