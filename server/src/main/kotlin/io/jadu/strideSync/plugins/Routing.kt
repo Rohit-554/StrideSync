@@ -1,7 +1,6 @@
 package io.jadu.strideSync.plugins
 
 import io.jadu.strideSync.repository.FeedRepository
-import io.jadu.strideSync.repository.GpsPointRepository
 import io.jadu.strideSync.repository.SocialRepository
 import io.jadu.strideSync.repository.UserRepository
 import io.jadu.strideSync.routes.activityRoutes
@@ -27,7 +26,6 @@ fun Application.configureRouting(
     socialRepository: SocialRepository,
     feedRepository: FeedRepository,
     userRepository: UserRepository,
-    gpsPointRepository: GpsPointRepository,
 ) {
     routing {
         get("/health") {
@@ -36,7 +34,7 @@ fun Application.configureRouting(
 
         authRoutes(authService)
         activityRoutes(activityService)
-        trackingRoutes(activityService, gpsPointRepository)
+        trackingRoutes()
         socialRoutes(socialRepository, userRepository)
         feedRoutes(feedRepository)
     }

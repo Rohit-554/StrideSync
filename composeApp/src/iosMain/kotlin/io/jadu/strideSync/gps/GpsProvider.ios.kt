@@ -17,6 +17,8 @@ import platform.CoreLocation.kCLLocationAccuracyBest
 import platform.Foundation.NSError
 import platform.Foundation.timeIntervalSince1970
 import platform.darwin.NSObject
+import platform.darwin.dispatch_async
+import platform.darwin.dispatch_get_main_queue
 
 @OptIn(ExperimentalForeignApi::class)
 actual class GpsProvider {
@@ -47,18 +49,25 @@ actual class GpsProvider {
         }
 
         locationDelegate = delegate
-        manager.delegate = delegate
-        manager.setDesiredAccuracy(kCLLocationAccuracyBest)
-        manager.setDistanceFilter(5.0)
-        manager.pausesLocationUpdatesAutomatically = false
-        ensureAuthorized(manager)
-        manager.startUpdatingLocation()
-
         locationManager = manager
 
+        // CoreLocation only delivers delegate callbacks on a thread with an active
+        // run loop. The flow is collected on a background dispatcher, so all manager
+        // calls must be routed to the main queue or no locations ever arrive.
+        dispatch_async(dispatch_get_main_queue()) {
+            manager.delegate = delegate
+            manager.setDesiredAccuracy(kCLLocationAccuracyBest)
+            manager.setDistanceFilter(5.0)
+            manager.pausesLocationUpdatesAutomatically = false
+            ensureAuthorized(manager)
+            manager.startUpdatingLocation()
+        }
+
         awaitClose {
-            manager.stopUpdatingLocation()
-            manager.delegate = null
+            dispatch_async(dispatch_get_main_queue()) {
+                manager.stopUpdatingLocation()
+                manager.delegate = null
+            }
             locationManager = null
             locationDelegate = null
         }
@@ -78,8 +87,11 @@ actual class GpsProvider {
     }
 
     actual fun stopTracking() {
-        locationManager?.stopUpdatingLocation()
-        locationManager?.delegate = null
+        val manager = locationManager
+        dispatch_async(dispatch_get_main_queue()) {
+            manager?.stopUpdatingLocation()
+            manager?.delegate = null
+        }
         locationManager = null
         locationDelegate = null
     }

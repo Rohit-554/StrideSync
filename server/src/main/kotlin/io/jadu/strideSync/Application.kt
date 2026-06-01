@@ -57,5 +57,5 @@ fun Application.module() {
     configureSerialization()
     configureAuthentication()
     configureWebSockets()
-    configureRouting(authService, activityService, socialRepository, feedRepository, userRepository, gpsPointRepository)
+    configureRouting(authService, activityService, socialRepository, feedRepository, userRepository)
 }

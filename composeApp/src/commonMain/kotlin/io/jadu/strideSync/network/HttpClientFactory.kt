@@ -33,10 +33,8 @@ fun createHttpClient(appPreferences: AppPreferences, sessionEventBus: SessionEve
     install(WebSockets)
     install(authInterceptor(appPreferences))
 
-    // Skip ngrok browser warning for physical device testing
     defaultRequest {
         url(AppConfig.BASE_URL)
-        headers.append("ngrok-skip-browser-warning", "true")
     }
 
     HttpResponseValidator {

@@ -108,8 +108,8 @@ class RecordViewModel(
         if (saveJobInFlight || _uiState.value.isSaving || _uiState.value.saveComplete) {
             return
         }
+        saveJobInFlight = true
         viewModelScope.launch {
-            saveJobInFlight = true
             try {
                 _uiState.value = _uiState.value.copy(isSaving = true, errorMessage = null)
 
