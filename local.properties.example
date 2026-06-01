@@ -4,6 +4,11 @@
 # Android SDK path (set automatically by Android Studio)
 sdk.dir=/path/to/Android/sdk
 
+# ─── Backend ─────────────────────────────────────────────────────────────────
+# Base URL of your deployed Ktor server. Injected into the app via BuildKonfig.
+# Defaults to the Android emulator loopback (http://10.0.2.2:8080) if omitted.
+BASE_URL=https://your-backend.example.com
+
 # ─── AI Provider Keys ────────────────────────────────────────────────────────
 # Get your key from each provider's console, then paste it below.
 # Only the key for your active provider (set in AppModule.kt) is required.

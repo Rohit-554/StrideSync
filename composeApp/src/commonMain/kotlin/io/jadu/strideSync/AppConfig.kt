@@ -1,5 +1,5 @@
 package io.jadu.strideSync
 
 object AppConfig {
-    const val BASE_URL = "https://stridesync-server.onrender.com"
+    val BASE_URL: String = BuildKonfig.BASE_URL
 }
