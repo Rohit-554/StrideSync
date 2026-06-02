@@ -15,6 +15,7 @@ import io.jadu.strideSync.domain.repository.ActivityRepository
 import io.jadu.strideSync.domain.repository.AuthRepository
 import io.jadu.strideSync.domain.repository.FeedRepository
 import io.jadu.strideSync.domain.repository.SocialRepository
+import io.jadu.strideSync.network.circuitbreaker.CircuitBreakerRegistry
 import io.jadu.strideSync.network.SessionEventBus
 import io.jadu.strideSync.network.createHttpClient
 import io.jadu.strideSync.tracking.TrackingEngine
@@ -31,7 +32,8 @@ import org.koin.dsl.module
 
 fun appModule(): Module = module {
     single { SessionEventBus() }
-    single<HttpClient> { createHttpClient(get(), get()) }
+    single { CircuitBreakerRegistry() }
+    single<HttpClient> { createHttpClient(get(), get(), get()) }
     single { AuthApi(get()) }
     single { ActivityApi(get()) }
     single { SocialApi(get()) }

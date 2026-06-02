@@ -1,10 +1,12 @@
 package io.jadu.strideSync.utils
 
 import io.jadu.strideSync.network.SessionExpiredException
+import io.jadu.strideSync.network.circuitbreaker.CircuitBreakerOpenException
 import io.ktor.client.plugins.ResponseException
 
 fun Throwable.toUiMessage(): String = when (this) {
     is SessionExpiredException -> "Session expired. Please log in again."
+    is CircuitBreakerOpenException -> "Server is temporarily unavailable. Please try again shortly."
     is ResponseException -> when (response.status.value) {
         401 -> "Session expired. Please log in again."
         403 -> "You don't have permission to do that."
